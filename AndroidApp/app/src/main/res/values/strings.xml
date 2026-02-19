@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="sign_in_button_title">SIGN IN</string>
+    <string name="repositories_fragment_title">Repositories</string>
 </resources>
