@@ -19,6 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tokenInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
@@ -28,11 +29,14 @@
         app:boxBackgroundMode="filled"
         app:boxBackgroundColor="@color/background"
         app:boxStrokeColor="@color/text_field_stroke_color"
+        app:errorEnabled="true"
+        app:errorTextColor="@color/error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoImageView">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tokenInputEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -43,7 +47,7 @@
             android:lineHeight="24dp"
             android:hint="@string/tokenTextFieldPlaceholder" />
     </com.google.android.material.textfield.TextInputLayout>
-    
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signInButton"
         android:layout_width="0dp"
@@ -57,4 +61,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        app:indicatorSize="24dp"
+        app:indicatorColor="@color/white"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@+id/signInButton"
+        app:layout_constraintBottom_toBottomOf="@+id/signInButton"
+        app:layout_constraintStart_toStartOf="@+id/signInButton"
+        app:layout_constraintEnd_toEndOf="@+id/signInButton"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
