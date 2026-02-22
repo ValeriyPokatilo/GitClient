@@ -17,7 +17,9 @@ import kotlinx.coroutines.launch
 import kotlin.getValue
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.internal.ViewUtils.showKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AuthFragment : Fragment() {
 
     private var _binding: FragmentAuthBinding? = null
