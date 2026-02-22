@@ -3,4 +3,7 @@
     <string name="sign_in_button_title">SIGN IN</string>
     <string name="repositories_fragment_title">Repositories</string>
     <string name="tokenTextFieldPlaceholder">Personal access token</string>
+    <string name="check_connection">Please check your connection</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
 </resources>
