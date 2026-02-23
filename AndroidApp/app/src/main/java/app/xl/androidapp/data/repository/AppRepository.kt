@@ -1,8 +1,10 @@
 package app.xl.androidapp.data.repository
 
-import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.data.dto.GitHubErrorDto
+import app.xl.androidapp.data.dto.RepoDto
 import app.xl.androidapp.data.network.GitHubApi
+import app.xl.androidapp.data.network.toBearerHeader
+import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.UserInfo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
@@ -16,11 +18,13 @@ class AppRepository(
 ) : AppRepositoryInterface {
     override suspend fun signIn(token: String): UserInfo {
         try {
-            val dto = api.getUser(token)
+            val authHeader = token.toBearerHeader()
+            val dto = api.getUser(authHeader)
+
             tokenManager.saveToken(token)
+
             return dto.toEntity()
         } catch (exception: retrofit2.HttpException) {
-
             val errorBody = exception.response()?.errorBody()?.string()
             val errorMessage = if (!errorBody.isNullOrEmpty()) {
                 runCatching {
@@ -42,9 +46,31 @@ class AppRepository(
         }
     }
 
-//    suspend fun getRepositories(): List<Repo> {
-//        // TODO:
-//    }
+    override suspend fun getRepositories(): List<RepoDto> {
+        val token = tokenManager.getToken()
+            ?: throw AppError.Network(Exception("No auth token"))
+
+        val authHeader = token.toBearerHeader()
+
+        try {
+            return api.getRepositories(authHeader)
+        } catch (exception: retrofit2.HttpException) {
+            val errorBody = exception.response()?.errorBody()?.string()
+            val errorMessage = if (!errorBody.isNullOrEmpty()) {
+                runCatching {
+                    json.decodeFromString<GitHubErrorDto>(errorBody).message
+                }.getOrNull()
+            } else null
+
+            throw AppError.Http(
+                code = exception.code(),
+                errorMessage = errorMessage,
+                cause = exception
+            )
+        } catch (exception: IOException) {
+            throw AppError.Network(cause = exception)
+        }
+    }
 
 //    suspend fun getRepository(repoId: String): RepoDetails {
 //        // TODO:
