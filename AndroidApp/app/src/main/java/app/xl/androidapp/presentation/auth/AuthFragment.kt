@@ -71,7 +71,8 @@ class AuthFragment : Fragment() {
                 }
 
                 is AuthViewModel.State.InvalidInput -> {
-                    // TODO: - show token error
+                    binding.signInButton.isEnabled = false
+                    binding.tokenInputLayout.error = R.string.invalid_token.toString()
                 }
             }
         }
@@ -117,8 +118,9 @@ class AuthFragment : Fragment() {
 
     private fun bindInputs() {
         binding.tokenInputEdit.doAfterTextChanged { text ->
-            viewModel.onTokenChanged(text?.toString().orEmpty())
+            binding.signInButton.isEnabled = true
             binding.tokenInputLayout.error = null
+            viewModel.onTokenChanged(text?.toString().orEmpty())
         }
     }
 

@@ -1,6 +1,5 @@
 package app.xl.androidapp.presentation.auth
 
-import androidx.core.R
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,9 +26,17 @@ class AuthViewModel @Inject constructor(
     private val _actions = MutableSharedFlow<Action>()
     val actions: Flow<Action> = _actions
 
+    private val githubTokenRegex = Regex("^[A-Za-z0-9_-]*$")
+
     fun onTokenChanged(text: String) {
         _token.value = text
         _state.value = State.Idle
+
+        _state.value = when {
+            text.isEmpty() -> State.Idle
+            !githubTokenRegex.matches(text) -> State.InvalidInput
+            else -> State.Idle
+        }
     }
 
     fun onSignInButtonPressed() {
@@ -81,7 +88,7 @@ class AuthViewModel @Inject constructor(
     sealed interface State {
         object Idle : State
         object Loading : State
-        data class InvalidInput(val reason: String) : State
+        object InvalidInput : State
     }
 
     sealed interface Action {
