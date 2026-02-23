@@ -1,5 +1,6 @@
 package app.xl.androidapp.data.repository
 
+import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.data.dto.GitHubErrorDto
 import app.xl.androidapp.data.network.GitHubApi
 import app.xl.androidapp.domain.entity.AppError
@@ -10,13 +11,14 @@ import java.io.IOException
 
 class AppRepository(
     private val api: GitHubApi,
-    private val json: Json
+    private val json: Json,
+    private val tokenManager: TokenManager
 ) : AppRepositoryInterface {
     override suspend fun signIn(token: String): UserInfo {
         try {
             val dto = api.getUser(token)
+            tokenManager.saveToken(token)
             return dto.toEntity()
-
         } catch (exception: retrofit2.HttpException) {
 
             val errorBody = exception.response()?.errorBody()?.string()

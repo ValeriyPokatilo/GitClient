@@ -1,10 +1,13 @@
 package app.xl.androidapp.data.network
 
+import android.content.Context
 import app.xl.androidapp.data.repository.AppRepository
+import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
 import kotlinx.serialization.json.Json
@@ -43,7 +46,17 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideAppRepository(api: GitHubApi, json: Json): AppRepositoryInterface {
-        return AppRepository(api, json)
+    fun provideAppRepository(
+        api: GitHubApi,
+        json: Json,
+        tokenManager: TokenManager
+    ): AppRepositoryInterface {
+        return AppRepository(api, json, tokenManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
+        return TokenManager(context)
     }
 }
