@@ -1,11 +1,13 @@
 package app.xl.androidapp.presentation.auth
 
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,7 +17,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentAuthBinding
-import com.google.android.material.internal.ViewUtils.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -100,6 +101,14 @@ class AuthFragment : Fragment() {
             }
         }
     }
+
+    private fun showKeyboard(view: View) {
+        if (view.requestFocus()) {
+            val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
+
     private fun bindSignInButton() {
         binding.signInButton.setOnClickListener {
             viewModel.onSignInButtonPressed()
