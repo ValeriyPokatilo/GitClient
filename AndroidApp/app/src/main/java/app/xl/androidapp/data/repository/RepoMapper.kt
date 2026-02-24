@@ -7,6 +7,7 @@ fun RepoDto.toEntity(): Repo {
     return Repo(
         id = this.id,
         name = this.name,
+        fullName = this.fullName,
         language = this.language,
         description = this.description
     )

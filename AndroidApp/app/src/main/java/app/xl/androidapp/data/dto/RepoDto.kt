@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class RepoDto(
     @SerialName("id") val id: Long,
     @SerialName("name") val name: String?,
+    @SerialName("full_name") val fullName: String?,
     @SerialName("language") val language: String?,
     @SerialName("description") val description: String?
 )
