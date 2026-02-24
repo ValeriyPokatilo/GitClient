@@ -8,7 +8,6 @@ import app.xl.androidapp.data.repository.toEntity
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
-import app.xl.androidapp.presentation.auth.AuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +22,10 @@ class RepositoriesListViewModel@Inject constructor(
     private val _state = MutableLiveData<State>(State.Loading)
     val state: LiveData<State> = _state
 
-    private val _actions = MutableSharedFlow<Action>()
+    private val _actions = MutableSharedFlow<Action>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
     val actions: Flow<Action> = _actions
 
     init {

@@ -2,15 +2,15 @@
     <string name="app_name">AndroidApp</string>
     <string name="sign_in_button_title">SIGN IN</string>
     <string name="repositories_fragment_title">Repositories</string>
-    <string name="tokenTextFieldPlaceholder">Personal access token</string>
+    <string name="token_text_field_placeholder">Personal access token</string>
     <string name="check_connection">Please check your connection</string>
     <string name="invalid_token">Invalid token</string>
     <string name="error">Error</string>
     <string name="ok">OK</string>
     <string name="logout">Logout</string>
     <string name="repositories">Repositories</string>
-    <string name="empty_placeholder_title">Empty</string>
-    <string name="empty_placeholder_subtitle">No repositories at the moment</string>
-    <string name="connection_error_placeholder_title">Connection error</string>
-    <string name="connection_error_placeholder_subtitle">Check your Internet connection</string>
+    <string name="repositories_empty_title">Empty</string>
+    <string name="repositories_empty_message">No repositories at the moment</string>
+    <string name="repositories_connection_error_title">Connection error</string>
+    <string name="repositories_connection_error_message">Check your Internet connection</string>
 </resources>

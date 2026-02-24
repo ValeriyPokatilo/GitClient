@@ -46,7 +46,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
             android:lineHeight="24dp"
-            android:hint="@string/tokenTextFieldPlaceholder" />
+            android:hint="@string/token_text_field_placeholder" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -66,7 +66,7 @@
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressIndicator"
         android:layout_width="wrap_content"
-        android:layout_height="35dp"
+        android:layout_height="wrap_content"
         app:indicatorSize="24dp"
         app:indicatorColor="@color/white"
         android:indeterminate="true"

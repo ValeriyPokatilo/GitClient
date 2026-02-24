@@ -91,9 +91,9 @@ class RepositoriesListFragment : Fragment() {
                     binding.progressIndicator.hide()
                     binding.placeholderView.show(
                         iconRes = R.drawable.ic_empty,
-                        titleText = getString(R.string.empty_placeholder_title),
+                        titleText = getString(R.string.repositories_empty_title),
                         titleColorRes = R.color.blue,
-                        subtitleText = getString(R.string.empty_placeholder_subtitle)
+                        messageText = getString(R.string.repositories_empty_message)
                     )
                 }
 
@@ -120,16 +120,16 @@ class RepositoriesListFragment : Fragment() {
                                 iconRes = R.drawable.ic_error,
                                 titleText = state.error.code.toString(),
                                 titleColorRes = R.color.error,
-                                subtitleText = state.error.message.toString()
+                                messageText = state.error.message.toString()
                             )
                         }
 
                         is AppError.Network -> {
                             binding.placeholderView.show(
                                 iconRes = R.drawable.ic_not_connected,
-                                titleText = getString(R.string.connection_error_placeholder_title),
+                                titleText = getString(R.string.repositories_connection_error_title),
                                 titleColorRes = R.color.error,
-                                subtitleText = getString(R.string.connection_error_placeholder_subtitle)
+                                messageText = getString(R.string.repositories_connection_error_message)
                             )
                         }
                     }

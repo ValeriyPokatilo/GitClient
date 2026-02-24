@@ -23,15 +23,16 @@ class AuthViewModel @Inject constructor(
     private val _state = MutableLiveData<State>(State.Idle)
     val state: LiveData<State> = _state
 
-    private val _actions = MutableSharedFlow<Action>()
+    private val _actions = MutableSharedFlow<Action>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
     val actions: Flow<Action> = _actions
 
     private val githubTokenRegex = Regex("^[A-Za-z0-9_-]*$")
 
     fun onTokenChanged(text: String) {
         _token.value = text
-        _state.value = State.Idle
-
         _state.value = when {
             text.isEmpty() -> State.Idle
             !githubTokenRegex.matches(text) -> State.InvalidInput
@@ -56,14 +57,13 @@ class AuthViewModel @Inject constructor(
                 _state.value = State.Idle
                 _actions.emit(Action.RouteToMain)
             } catch (error: AppError) {
+                _state.value = State.Idle
                 handleError(error)
             }
         }
     }
 
     private suspend fun handleError(error: AppError) {
-        _state.value = State.Idle
-
         when (error) {
             is AppError.Http -> {
                 _actions.emit(

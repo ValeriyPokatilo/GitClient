@@ -21,7 +21,7 @@ class PlaceholderView @JvmOverloads constructor(
 
     private val icon: ImageView
     private val title: TextView
-    private val subtitle: TextView
+    private val message: TextView
 
     init {
         orientation = VERTICAL
@@ -30,20 +30,20 @@ class PlaceholderView @JvmOverloads constructor(
 
         icon = findViewById(R.id.placeholderIcon)
         title = findViewById(R.id.placeholderTitle)
-        subtitle = findViewById(R.id.placeholderSubtitle)
+        message = findViewById(R.id.placeholderMessage)
     }
 
     fun show(
         @DrawableRes iconRes: Int,
         titleText: String,
-        subtitleText: String,
+        messageText: String,
         @ColorRes titleColorRes: Int = android.R.color.white
     ) {
         visibility = View.VISIBLE
         icon.setImageResource(iconRes)
         title.text = titleText
         title.setTextColor(ContextCompat.getColor(context, titleColorRes))
-        subtitle.text = subtitleText
+        message.text = messageText
     }
 
     fun hide() {

@@ -40,15 +40,15 @@ class AppRepository(
                 cause = exception
             )
         } catch (exception: IOException) {
-            throw AppError.Network(
-                cause = exception
-            )
+            throw AppError.Network(cause = exception)
         }
     }
 
     override suspend fun getRepositories(): List<RepoDto> {
         val token = tokenManager.getToken()
-            ?: throw AppError.Network(Exception("No auth token"))
+            ?: throw AppError.Network(
+                Exception(app.xl.androidapp.R.string.invalid_token.toString())
+            )
 
         val authHeader = token.toBearerHeader()
 
@@ -60,7 +60,9 @@ class AppRepository(
                 runCatching {
                     json.decodeFromString<GitHubErrorDto>(errorBody).message
                 }.getOrNull()
-            } else null
+            } else {
+                null
+            }
 
             throw AppError.Http(
                 code = exception.code(),
