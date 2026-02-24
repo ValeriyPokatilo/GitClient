@@ -9,4 +9,8 @@
     <string name="ok">OK</string>
     <string name="logout">Logout</string>
     <string name="repositories">Repositories</string>
+    <string name="empty_placeholder_title">Empty</string>
+    <string name="empty_placeholder_subtitle">No repositories at the moment</string>
+    <string name="connection_error_placeholder_title">Connection error</string>
+    <string name="connection_error_placeholder_subtitle">Check your Internet connection</string>
 </resources>
