@@ -33,7 +33,11 @@
         android:id="@+id/detailInfoFragment"
         android:name="app.xl.androidapp.presentation.details.DetailInfoFragment"
         android:label="fragment_detail_info"
-        tools:layout="@layout/fragment_detail_info" />
+        tools:layout="@layout/fragment_detail_info">
+        <argument
+            android:name="repositoryFullName"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/launcherFragment"
         android:name="app.xl.androidapp.presentation.launcher.LauncherFragment"

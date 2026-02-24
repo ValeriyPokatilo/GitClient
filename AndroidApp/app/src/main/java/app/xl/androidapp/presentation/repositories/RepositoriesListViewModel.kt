@@ -39,6 +39,12 @@ class RepositoriesListViewModel@Inject constructor(
         }
     }
 
+    fun onRepositoryItemPressed(repository: Repo) {
+        viewModelScope.launch {
+            _actions.emit(Action.RouteToDetail(repository.fullName ?: ""))
+        }
+    }
+
     private fun loadRepositories() {
         viewModelScope.launch {
             _state.value = State.Loading
@@ -65,6 +71,6 @@ class RepositoriesListViewModel@Inject constructor(
 
     sealed interface Action {
         object Logout : Action
-        object RouteToDetail : Action
+        data class RouteToDetail(val fullName: String) : Action
     }
 }

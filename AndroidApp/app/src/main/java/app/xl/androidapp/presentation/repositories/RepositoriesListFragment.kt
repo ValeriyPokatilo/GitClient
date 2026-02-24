@@ -76,7 +76,9 @@ class RepositoriesListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() = with(binding.recyclerView) {
-        repoAdapter = RepoAdapter()
+        repoAdapter = RepoAdapter({ repository ->
+            viewModel.onRepositoryItemPressed(repository)
+        })
         adapter = repoAdapter
         layoutManager = LinearLayoutManager(context)
         addItemDecoration(divider)
@@ -143,8 +145,8 @@ class RepositoriesListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.actions.collect { action ->
                     when (action) {
-                        RepositoriesListViewModel.Action.RouteToDetail -> {
-                            // TODO: - navigate to detail
+                        is RepositoriesListViewModel.Action.RouteToDetail -> {
+                            navigateToDetails(action.fullName)
                         }
 
                         RepositoriesListViewModel.Action.Logout -> {
@@ -158,5 +160,14 @@ class RepositoriesListFragment : Fragment() {
 
     private fun navigateToAuth() {
         findNavController().navigate(R.id.action_global_authFragment)
+    }
+
+    private fun navigateToDetails(fullName: String) {
+        val action = RepositoriesListFragmentDirections
+            .actionRepositoriesListFragmentToDetailInfoFragment(
+                repositoryFullName = fullName
+            )
+
+        findNavController().navigate(action)
     }
 }
