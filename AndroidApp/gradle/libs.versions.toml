@@ -18,6 +18,7 @@ hilt = "2.59.2"
 ksp = "2.3.4"
 serialization = "2.3.10"
 retrofit = "3.0.0"
+safeargs = "2.9.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,4 +46,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
+safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "safeargs" }
 
