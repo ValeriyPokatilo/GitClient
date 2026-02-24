@@ -91,13 +91,14 @@ class RepositoriesListFragment : Fragment() {
                 }
 
                 RepositoriesListViewModel.State.Loading -> {
-                    // TODO: - show loader
                     binding.recyclerView.isVisible = false
+                    binding.progressIndicator.show()
                 }
 
                 is RepositoriesListViewModel.State.Loaded -> {
                     repoAdapter.submitList(state.repos)
                     binding.recyclerView.isVisible = true
+                    binding.progressIndicator.hide()
                 }
 
                 is RepositoriesListViewModel.State.Error -> {
