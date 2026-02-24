@@ -79,4 +79,8 @@ class AppRepository(
 //    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String {
 //        // TODO:
 //    }
+
+    override suspend fun logout() {
+        tokenManager.clearToken()
+    }
 }

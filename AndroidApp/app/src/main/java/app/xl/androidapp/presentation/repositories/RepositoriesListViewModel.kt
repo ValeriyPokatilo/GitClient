@@ -10,6 +10,8 @@ import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -20,8 +22,18 @@ class RepositoriesListViewModel@Inject constructor(
     private val _state = MutableLiveData<State>(State.Loading)
     val state: LiveData<State> = _state
 
+    private val _actions = MutableSharedFlow<Action>()
+    val actions: Flow<Action> = _actions
+
     init {
         loadRepositories()
+    }
+
+    fun onLogoutButtonPressed() {
+        viewModelScope.launch {
+            repository.logout()
+            _actions.emit(Action.Logout)
+        }
     }
 
     private fun loadRepositories() {
@@ -51,5 +63,10 @@ class RepositoriesListViewModel@Inject constructor(
         data class Loaded(val repos: List<Repo>) : State
         data class Error(val error: String) : State
         object Empty : State
+    }
+
+    sealed interface Action {
+        object Logout : Action
+        object RouteToDetail : Action
     }
 }

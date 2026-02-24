@@ -7,4 +7,6 @@
     <string name="invalid_token">Invalid token</string>
     <string name="error">Error</string>
     <string name="ok">OK</string>
+    <string name="logout">Logout</string>
+    <string name="repositories">Repositories</string>
 </resources>

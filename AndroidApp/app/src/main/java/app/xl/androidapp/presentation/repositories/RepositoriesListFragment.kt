@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentRepositoriesListBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RepositoriesListFragment : Fragment() {
@@ -28,6 +34,7 @@ class RepositoriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupNavigationBar()
         bindToViewModel()
     }
 
@@ -38,6 +45,18 @@ class RepositoriesListFragment : Fragment() {
 
     private fun bindToViewModel() {
         bindRepositoriesListState()
+        bindActions()
+    }
+
+    private fun setupNavigationBar() {
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_logout -> {
+                    viewModel.onLogoutButtonPressed()
+                    true
+                } else -> false
+            }
+        }
     }
 
     private fun bindRepositoriesListState() {
@@ -60,5 +79,26 @@ class RepositoriesListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun bindActions() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.actions.collect { action ->
+                    when (action) {
+                        RepositoriesListViewModel.Action.RouteToDetail -> {
+                            // TODO: - navigate to detail
+                        }
+                        RepositoriesListViewModel.Action.Logout -> {
+                            navigateToAuth()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun navigateToAuth() {
+        findNavController().navigate(R.id.action_global_authFragment)
     }
 }
