@@ -60,7 +60,7 @@ class RepositoriesListViewModel@Inject constructor(
 
     sealed interface State {
         object Loading : State
-        data class Loaded(val repos: List<Repo>) : State
+        data class Loaded(val repositories: List<Repo>) : State
         data class Error(val error: String) : State
         object Empty : State
     }

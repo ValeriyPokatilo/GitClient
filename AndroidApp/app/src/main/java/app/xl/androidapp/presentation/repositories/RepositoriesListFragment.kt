@@ -86,24 +86,33 @@ class RepositoriesListFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 RepositoriesListViewModel.State.Empty -> {
-                    // TODO: - show empty placeholder
                     binding.recyclerView.isVisible = false
+                    binding.progressIndicator.hide()
+                    binding.placeholderView.show(
+                        iconRes = R.drawable.ic_empty,
+                        titleText = getString(R.string.empty_placeholder_title),
+                        titleColorRes = R.color.blue,
+                        subtitleText = getString(R.string.empty_placeholder_subtitle)
+                    )
                 }
 
                 RepositoriesListViewModel.State.Loading -> {
                     binding.recyclerView.isVisible = false
                     binding.progressIndicator.show()
+                    binding.placeholderView.hide()
                 }
 
                 is RepositoriesListViewModel.State.Loaded -> {
-                    repoAdapter.submitList(state.repos)
+                    repoAdapter.submitList(state.repositories)
                     binding.recyclerView.isVisible = true
                     binding.progressIndicator.hide()
+                    binding.placeholderView.hide()
                 }
 
                 is RepositoriesListViewModel.State.Error -> {
                     // TODO: - show error placeholder
                     binding.recyclerView.isVisible = false
+                    binding.progressIndicator.hide()
                 }
             }
         }
