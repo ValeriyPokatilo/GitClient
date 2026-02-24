@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentRepositoriesListBinding
+import app.xl.androidapp.domain.entity.AppError
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -110,9 +111,28 @@ class RepositoriesListFragment : Fragment() {
                 }
 
                 is RepositoriesListViewModel.State.Error -> {
-                    // TODO: - show error placeholder
                     binding.recyclerView.isVisible = false
                     binding.progressIndicator.hide()
+
+                    when (state.error) {
+                        is AppError.Http -> {
+                            binding.placeholderView.show(
+                                iconRes = R.drawable.ic_error,
+                                titleText = state.error.code.toString(),
+                                titleColorRes = R.color.error,
+                                subtitleText = state.error.message.toString()
+                            )
+                        }
+
+                        is AppError.Network -> {
+                            binding.placeholderView.show(
+                                iconRes = R.drawable.ic_not_connected,
+                                titleText = getString(R.string.connection_error_placeholder_title),
+                                titleColorRes = R.color.error,
+                                subtitleText = getString(R.string.connection_error_placeholder_subtitle)
+                            )
+                        }
+                    }
                 }
             }
         }

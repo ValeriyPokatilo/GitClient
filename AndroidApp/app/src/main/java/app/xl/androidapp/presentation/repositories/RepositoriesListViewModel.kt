@@ -8,6 +8,7 @@ import app.xl.androidapp.data.repository.toEntity
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
+import app.xl.androidapp.presentation.auth.AuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -48,20 +49,15 @@ class RepositoriesListViewModel@Inject constructor(
                     State.Loaded(repositories.map { it.toEntity() })
                 }
             } catch (error: AppError) {
-                _state.value = State.Error(error.message.toString())
-                handleError(error)
+                _state.value = State.Error(error)
             }
         }
-    }
-
-    private fun handleError(error: AppError) {
-        // TODO: - fill error placeholder
     }
 
     sealed interface State {
         object Loading : State
         data class Loaded(val repositories: List<Repo>) : State
-        data class Error(val error: String) : State
+        data class Error(val error: AppError) : State
         object Empty : State
     }
 
