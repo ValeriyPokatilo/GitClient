@@ -62,4 +62,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.markwon)
 }
