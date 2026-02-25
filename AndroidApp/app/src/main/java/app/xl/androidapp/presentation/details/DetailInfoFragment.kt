@@ -59,9 +59,15 @@ class DetailInfoFragment : Fragment() {
     private fun bindState() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is RepositoryInfoViewModel.State.Error -> {}
-                is RepositoryInfoViewModel.State.Loaded -> {}
-                RepositoryInfoViewModel.State.Loading -> {}
+                RepositoryInfoViewModel.State.Loading -> {
+                    binding.progressIndicator.show()
+                }
+                is RepositoryInfoViewModel.State.Loaded -> {
+                    binding.progressIndicator.hide()
+                }
+                is RepositoryInfoViewModel.State.Error -> {
+                    binding.progressIndicator.hide()
+                }
             }
         }
     }
@@ -69,10 +75,10 @@ class DetailInfoFragment : Fragment() {
     private fun bindReadmeState() {
         viewModel.readmeState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                RepositoryInfoViewModel.ReadmeState.Loading -> {}
+                is RepositoryInfoViewModel.ReadmeState.Loaded -> {}
                 RepositoryInfoViewModel.ReadmeState.Empty -> {}
                 is RepositoryInfoViewModel.ReadmeState.Error -> {}
-                is RepositoryInfoViewModel.ReadmeState.Loaded -> {}
-                RepositoryInfoViewModel.ReadmeState.Loading -> {}
             }
         }
     }
