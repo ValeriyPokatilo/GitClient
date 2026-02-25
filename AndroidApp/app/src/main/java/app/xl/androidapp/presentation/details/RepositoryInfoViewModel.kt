@@ -2,8 +2,10 @@ package app.xl.androidapp.presentation.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,8 +16,12 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RepositoryInfoViewModel @Inject constructor(
-    private val repository: AppRepositoryInterface
+    private val repository: AppRepositoryInterface,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private val owner: String = checkNotNull(savedStateHandle["owner"])
+    private val repoName: String = checkNotNull(savedStateHandle["repoName"])
 
     private val _state = MutableLiveData<State>(State.Loading)
     val state: LiveData<State> = _state
@@ -28,6 +34,10 @@ class RepositoryInfoViewModel @Inject constructor(
         extraBufferCapacity = 1
     )
     val actions: Flow<Action> = _actions
+
+    init {
+        loadRepositoryInfo()
+    }
 
     fun onBackButtonPressed() {
         viewModelScope.launch {
@@ -42,9 +52,24 @@ class RepositoryInfoViewModel @Inject constructor(
         }
     }
 
+    private fun loadRepositoryInfo() {
+        viewModelScope.launch {
+            _state.value = State.Loading
+            try {
+                val detail = repository.getRepository(
+                    owner = owner,
+                    repo = repoName
+                )
+                // TODO: - set state
+            } catch (error: AppError) {
+                // TODO: - set state
+            }
+        }
+    }
+
     sealed interface State {
         object Loading : State
-        data class Error(val error: String) : State
+        data class Error(val error: AppError) : State
 
         data class Loaded(
             val githubRepo: Repo,
@@ -55,7 +80,7 @@ class RepositoryInfoViewModel @Inject constructor(
     sealed interface ReadmeState {
         object Loading : ReadmeState
         object Empty : ReadmeState
-        data class Error(val error: String) : ReadmeState
+        data class Error(val error: AppError) : ReadmeState
         data class Loaded(val markdown: String) : ReadmeState
     }
 

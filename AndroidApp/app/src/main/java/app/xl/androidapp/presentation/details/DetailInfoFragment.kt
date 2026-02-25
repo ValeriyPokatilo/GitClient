@@ -15,7 +15,6 @@ import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlin.getValue
 
 @AndroidEntryPoint
 class DetailInfoFragment : Fragment() {
@@ -28,8 +27,11 @@ class DetailInfoFragment : Fragment() {
 
     private val args: DetailInfoFragmentArgs by navArgs()
 
-    private val repositoryFullName: String
-        get() = args.repositoryFullName
+    private val owner: String
+        get() = args.owner
+
+    private val repoName: String
+        get() = args.repoName
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,7 +103,7 @@ class DetailInfoFragment : Fragment() {
     }
 
     private fun setupNavigationBar() {
-        binding.toolbar.title = repositoryFullName
+        binding.toolbar.title = repoName
 
         binding.toolbar.setNavigationIcon(
             R.drawable.ic_back

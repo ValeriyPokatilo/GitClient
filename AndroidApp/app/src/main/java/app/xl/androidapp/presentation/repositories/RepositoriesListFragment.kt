@@ -146,7 +146,7 @@ class RepositoriesListFragment : Fragment() {
                 viewModel.actions.collect { action ->
                     when (action) {
                         is RepositoriesListViewModel.Action.RouteToDetail -> {
-                            navigateToDetails(action.fullName)
+                            navigateToDetails(owner = action.owner, repoName = action.repoName)
                         }
 
                         RepositoriesListViewModel.Action.Logout -> {
@@ -162,10 +162,11 @@ class RepositoriesListFragment : Fragment() {
         findNavController().navigate(R.id.action_global_authFragment)
     }
 
-    private fun navigateToDetails(fullName: String) {
+    private fun navigateToDetails(owner: String, repoName: String) {
         val action = RepositoriesListFragmentDirections
             .actionRepositoriesListFragmentToDetailInfoFragment(
-                repositoryFullName = fullName
+                owner = owner,
+                repoName = repoName
             )
 
         findNavController().navigate(action)

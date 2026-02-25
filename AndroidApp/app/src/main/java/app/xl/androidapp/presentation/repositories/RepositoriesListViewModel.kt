@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.xl.androidapp.data.repository.toEntity
+import app.xl.androidapp.data.repository.mappers.toEntity
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
@@ -41,7 +41,10 @@ class RepositoriesListViewModel @Inject constructor(
 
     fun onRepositoryItemPressed(repository: Repo) {
         viewModelScope.launch {
-            _actions.emit(Action.RouteToDetail(repository.fullName ?: ""))
+            _actions.emit(Action.RouteToDetail(
+                owner =  repository.owner.login,
+                repoName = repository.name)
+            )
         }
     }
 
@@ -71,6 +74,6 @@ class RepositoriesListViewModel @Inject constructor(
 
     sealed interface Action {
         object Logout : Action
-        data class RouteToDetail(val fullName: String) : Action
+        data class RouteToDetail(val owner: String, val repoName: String) : Action
     }
 }

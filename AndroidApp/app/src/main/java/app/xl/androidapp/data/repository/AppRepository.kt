@@ -1,9 +1,11 @@
 package app.xl.androidapp.data.repository
 
 import app.xl.androidapp.data.dto.GitHubErrorDto
+import app.xl.androidapp.data.dto.RepoDetailsDto
 import app.xl.androidapp.data.dto.RepoDto
 import app.xl.androidapp.data.network.GitHubApi
 import app.xl.androidapp.data.network.toBearerHeader
+import app.xl.androidapp.data.repository.mappers.toEntity
 import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.UserInfo
@@ -74,9 +76,40 @@ class AppRepository(
         }
     }
 
-//    suspend fun getRepository(repoId: String): RepoDetails {
-//        // TODO:
-//    }
+    override suspend fun getRepository(owner: String, repo: String): RepoDetailsDto {
+        val token = tokenManager.getToken()
+            ?: throw AppError.Network(
+                Exception(app.xl.androidapp.R.string.invalid_token.toString())
+            )
+
+        val authHeader = token.toBearerHeader()
+
+        try {
+            return api.getRepository(
+                token = authHeader,
+                owner = owner,
+                repo = repo
+            )
+        } catch (exception: retrofit2.HttpException) {
+            val errorBody = exception.response()?.errorBody()?.string()
+            val errorMessage = if (!errorBody.isNullOrEmpty()) {
+                runCatching {
+                    json.decodeFromString<GitHubErrorDto>(errorBody).message
+                }.getOrNull()
+            } else {
+                null
+            }
+
+            throw AppError.Http(
+                code = exception.code(),
+                errorMessage = errorMessage,
+                cause = exception
+            )
+
+        } catch (exception: IOException) {
+            throw AppError.Network(cause = exception)
+        }
+    }
 
 //    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String {
 //        // TODO:

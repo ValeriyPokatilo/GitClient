@@ -1,9 +1,11 @@
 package app.xl.androidapp.data.network
 
+import app.xl.androidapp.data.dto.RepoDetailsDto
 import app.xl.androidapp.data.dto.RepoDto
 import app.xl.androidapp.data.dto.UserInfoDto
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Path
 
 interface GitHubApi {
     @GET("user")
@@ -15,4 +17,11 @@ interface GitHubApi {
     suspend fun getRepositories(
         @Header("Authorization") token: String
     ): List<RepoDto>
+
+    @GET("repos/{owner}/{repo}")
+    suspend fun getRepository(
+        @Header("Authorization") token: String,
+        @Path("owner") owner: String,
+        @Path("repo") repo: String
+    ): RepoDetailsDto
 }
