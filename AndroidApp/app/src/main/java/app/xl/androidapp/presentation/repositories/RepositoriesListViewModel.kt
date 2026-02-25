@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RepositoriesListViewModel@Inject constructor(
+class RepositoriesListViewModel @Inject constructor(
     private val repository: AppRepositoryInterface
 ) : ViewModel() {
 
