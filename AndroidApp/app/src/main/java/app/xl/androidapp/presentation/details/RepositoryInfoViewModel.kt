@@ -74,7 +74,7 @@ class RepositoryInfoViewModel @Inject constructor(
         viewModelScope.launch {
             _readmeState.value = ReadmeState.Loading
             try {
-                val readme = repository.getRepositoryReadme(owner, repoName, branchName = "main")
+                val readme = repository.getRepositoryReadme(owner, repoName, branchName = branch)
                 if (readme == null) {
                     // TODO: - set state
                 } else {
