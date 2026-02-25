@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.xl.androidapp.data.repository.mappers.toEntity
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
@@ -60,7 +59,7 @@ class RepositoriesListViewModel @Inject constructor(
                 _state.value = if (repositories.isEmpty()) {
                     State.Empty
                 } else {
-                    State.Loaded(repositories.map { it.toEntity() })
+                    State.Loaded(repositories.map { it })
                 }
             } catch (error: AppError) {
                 _state.value = State.Error(error)
