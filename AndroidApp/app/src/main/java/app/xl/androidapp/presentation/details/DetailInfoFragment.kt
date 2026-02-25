@@ -33,6 +33,9 @@ class DetailInfoFragment : Fragment() {
     private val repoName: String
         get() = args.repoName
 
+    private val branch: String
+        get() = args.branch
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

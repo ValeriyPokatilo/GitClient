@@ -11,7 +11,7 @@ interface AppRepositoryInterface {
 
     suspend fun getRepository(owner: String, repo: String): RepoDetailsDto
 
-//    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String
+    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String?
 
     suspend fun logout()
 }

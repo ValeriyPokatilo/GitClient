@@ -5,5 +5,6 @@ data class Repo(
     val name: String,
     val owner: Owner,
     val language: String?,
-    val description: String?
+    val description: String?,
+    val defaultBranch: String
 )

@@ -111,9 +111,43 @@ class AppRepository(
         }
     }
 
-//    suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String {
-//        // TODO:
-//    }
+    override suspend fun getRepositoryReadme(
+        ownerName: String,
+        repositoryName: String,
+        branchName: String
+    ): String? {
+        val token = tokenManager.getToken()
+            ?: throw AppError.Network(
+                Exception(app.xl.androidapp.R.string.invalid_token.toString())
+            )
+
+        val authHeader = token.toBearerHeader()
+
+        return try {
+            val dto = api.getRepositoryReadme(
+                token = authHeader,
+                owner = ownerName,
+                repo = repositoryName,
+                branch = branchName
+            )
+
+            if (dto.encoding != "base64") {
+                throw AppError.DataFormat("Unsupported encoding: ${dto.encoding}")
+            }
+
+            String(android.util.Base64.decode(dto.content, android.util.Base64.DEFAULT))
+                .takeIf { it.isNotEmpty() }
+        } catch (exception: retrofit2.HttpException) {
+            if (exception.code() == 404) null
+            else throw AppError.Http(
+                code = exception.code(),
+                errorMessage = exception.response()?.errorBody()?.string(),
+                cause = exception
+            )
+        } catch (exception: IOException) {
+            throw AppError.Network(cause = exception)
+        }
+    }
 
     override suspend fun logout() {
         tokenManager.clearToken()

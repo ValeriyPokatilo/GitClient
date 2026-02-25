@@ -41,9 +41,12 @@ class RepositoriesListViewModel @Inject constructor(
 
     fun onRepositoryItemPressed(repository: Repo) {
         viewModelScope.launch {
-            _actions.emit(Action.RouteToDetail(
-                owner =  repository.owner.login,
-                repoName = repository.name)
+            _actions.emit(
+                Action.RouteToDetail(
+                    owner = repository.owner.login,
+                    repoName = repository.name,
+                    branch = repository.defaultBranch
+                )
             )
         }
     }
@@ -74,6 +77,10 @@ class RepositoriesListViewModel @Inject constructor(
 
     sealed interface Action {
         object Logout : Action
-        data class RouteToDetail(val owner: String, val repoName: String) : Action
+        data class RouteToDetail(
+            val owner: String,
+            val repoName: String,
+            val branch: String
+        ) : Action
     }
 }

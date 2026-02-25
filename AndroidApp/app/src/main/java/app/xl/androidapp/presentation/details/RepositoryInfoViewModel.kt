@@ -22,6 +22,7 @@ class RepositoryInfoViewModel @Inject constructor(
 
     private val owner: String = checkNotNull(savedStateHandle["owner"])
     private val repoName: String = checkNotNull(savedStateHandle["repoName"])
+    private val branch: String = checkNotNull(savedStateHandle["branch"])
 
     private val _state = MutableLiveData<State>(State.Loading)
     val state: LiveData<State> = _state
@@ -37,17 +38,18 @@ class RepositoryInfoViewModel @Inject constructor(
 
     init {
         loadRepositoryInfo()
+        loadReadme()
     }
 
     fun onBackButtonPressed() {
         viewModelScope.launch {
-            repository.logout()
             _actions.emit(Action.RouteBack)
         }
     }
 
     fun onLogoutPressed() {
         viewModelScope.launch {
+            repository.logout()
             _actions.emit(Action.Logout)
         }
     }
@@ -60,8 +62,25 @@ class RepositoryInfoViewModel @Inject constructor(
                     owner = owner,
                     repo = repoName
                 )
+
                 // TODO: - set state
             } catch (error: AppError) {
+                // TODO: - set state
+            }
+        }
+    }
+
+    private fun loadReadme() {
+        viewModelScope.launch {
+            _readmeState.value = ReadmeState.Loading
+            try {
+                val readme = repository.getRepositoryReadme(owner, repoName, branchName = "main")
+                if (readme == null) {
+                    // TODO: - set state
+                } else {
+                    // TODO: - set state
+                }
+            } catch (e: AppError) {
                 // TODO: - set state
             }
         }

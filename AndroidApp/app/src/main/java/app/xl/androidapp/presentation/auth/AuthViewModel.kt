@@ -82,6 +82,10 @@ class AuthViewModel @Inject constructor(
                     )
                 )
             }
+
+            else -> {
+                Unit
+            }
         }
     }
 

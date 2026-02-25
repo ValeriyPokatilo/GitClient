@@ -9,6 +9,7 @@ fun RepoDto.toEntity(): Repo {
         name = this.name,
         owner = this.owner.toEntity(),
         language = this.language,
-        description = this.description
+        description = this.description,
+        defaultBranch = this.defaultBranch
     )
 }

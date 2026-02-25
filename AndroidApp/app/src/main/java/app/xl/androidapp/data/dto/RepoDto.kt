@@ -9,5 +9,6 @@ data class RepoDto(
     @SerialName("name") val name: String,
     @SerialName("owner") val owner: OwnerDto,
     @SerialName("language") val language: String?,
-    @SerialName("description") val description: String?
+    @SerialName("description") val description: String?,
+    @SerialName("default_branch") val defaultBranch: String
 )

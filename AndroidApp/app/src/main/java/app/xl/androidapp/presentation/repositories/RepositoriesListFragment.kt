@@ -134,6 +134,10 @@ class RepositoriesListFragment : Fragment() {
                                 messageText = getString(R.string.repositories_connection_error_message)
                             )
                         }
+
+                        else -> {
+                            Unit
+                        }
                     }
                 }
             }
@@ -146,7 +150,11 @@ class RepositoriesListFragment : Fragment() {
                 viewModel.actions.collect { action ->
                     when (action) {
                         is RepositoriesListViewModel.Action.RouteToDetail -> {
-                            navigateToDetails(owner = action.owner, repoName = action.repoName)
+                            navigateToDetails(
+                                owner = action.owner,
+                                repoName = action.repoName,
+                                branch = action.branch
+                            )
                         }
 
                         RepositoriesListViewModel.Action.Logout -> {
@@ -162,11 +170,12 @@ class RepositoriesListFragment : Fragment() {
         findNavController().navigate(R.id.action_global_authFragment)
     }
 
-    private fun navigateToDetails(owner: String, repoName: String) {
+    private fun navigateToDetails(owner: String, repoName: String, branch: String) {
         val action = RepositoriesListFragmentDirections
             .actionRepositoriesListFragmentToDetailInfoFragment(
                 owner = owner,
-                repoName = repoName
+                repoName = repoName,
+                branch = branch
             )
 
         findNavController().navigate(action)
