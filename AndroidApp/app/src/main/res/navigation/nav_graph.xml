@@ -37,6 +37,9 @@
         <argument
             android:name="repositoryFullName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_detailInfoFragment_to_authFragment"
+            app:destination="@id/authFragment" />
     </fragment>
     <fragment
         android:id="@+id/launcherFragment"

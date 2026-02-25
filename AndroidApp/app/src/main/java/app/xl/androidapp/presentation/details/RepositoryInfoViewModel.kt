@@ -3,12 +3,14 @@ package app.xl.androidapp.presentation.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.xl.androidapp.domain.entity.Repo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RepositoryInfoViewModel @Inject constructor(
@@ -26,6 +28,19 @@ class RepositoryInfoViewModel @Inject constructor(
         extraBufferCapacity = 1
     )
     val actions: Flow<Action> = _actions
+
+    fun onBackButtonPressed() {
+        viewModelScope.launch {
+            repository.logout()
+            _actions.emit(Action.RouteBack)
+        }
+    }
+
+    fun onLogoutPressed() {
+        viewModelScope.launch {
+            _actions.emit(Action.Logout)
+        }
+    }
 
     sealed interface State {
         object Loading : State
