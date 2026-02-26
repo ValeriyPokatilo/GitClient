@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
+import app.xl.androidapp.presentation.utils.MarkwonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,15 +28,12 @@ class DetailInfoFragment : Fragment() {
     private val viewModel: RepositoryInfoViewModel by viewModels()
 
     private val args: DetailInfoFragmentArgs by navArgs()
+    private val repositoryName: String
+        get() = args.repositoryName
 
-    private val owner: String
-        get() = args.owner
-
-    private val repoName: String
-        get() = args.repoName
-
-    private val branch: String
-        get() = args.branch
+    private val markwon by lazy {
+        MarkwonFactory.createMarkwon(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,36 +55,9 @@ class DetailInfoFragment : Fragment() {
     }
 
     private fun bindToViewModel() {
+        bindActions()
         bindState()
         bindReadmeState()
-        bindActions()
-    }
-
-    private fun bindState() {
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                RepositoryInfoViewModel.State.Loading -> {
-                    binding.progressIndicator.show()
-                }
-                is RepositoryInfoViewModel.State.Loaded -> {
-                    binding.progressIndicator.hide()
-                }
-                is RepositoryInfoViewModel.State.Error -> {
-                    binding.progressIndicator.hide()
-                }
-            }
-        }
-    }
-
-    private fun bindReadmeState() {
-        viewModel.readmeState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                RepositoryInfoViewModel.ReadmeState.Loading -> {}
-                is RepositoryInfoViewModel.ReadmeState.Loaded -> {}
-                RepositoryInfoViewModel.ReadmeState.Empty -> {}
-                is RepositoryInfoViewModel.ReadmeState.Error -> {}
-            }
-        }
     }
 
     private fun bindActions() {
@@ -105,8 +77,54 @@ class DetailInfoFragment : Fragment() {
         }
     }
 
+    private fun bindState() {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                RepositoryInfoViewModel.State.Loading -> {
+                    binding.progressIndicator.show()
+                }
+                is RepositoryInfoViewModel.State.Loaded -> {
+                    binding.progressIndicator.hide()
+                }
+                is RepositoryInfoViewModel.State.Error -> {
+                    binding.progressIndicator.hide()
+                }
+            }
+        }
+    }
+
+    private fun bindReadmeState() {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            if (state is RepositoryInfoViewModel.State.Loaded) {
+                val readmeTextView = binding.readmeTextView
+                when (val readmeState = state.readmeState) {
+                    is RepositoryInfoViewModel.ReadmeState.Loaded -> {
+                        readmeState.markdown?.let {
+                            markwon.setMarkdown(readmeTextView, readmeState.markdown)
+                        }
+                    }
+
+                    RepositoryInfoViewModel.ReadmeState.Empty -> {
+                        readmeTextView.setTextColor(
+                            ContextCompat.getColor(requireContext(), R.color.white_70)
+                        )
+                        readmeTextView.setText(R.string.no_readme_md)
+                    }
+
+                    is RepositoryInfoViewModel.ReadmeState.Error -> {
+                        // TODO: - set error
+                    }
+
+                    RepositoryInfoViewModel.ReadmeState.Loading -> {
+                        // TODO: - show loader
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupNavigationBar() {
-        binding.toolbar.title = repoName
+        binding.toolbar.title = repositoryName
 
         binding.toolbar.setNavigationIcon(
             R.drawable.ic_back

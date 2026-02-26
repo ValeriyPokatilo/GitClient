@@ -43,7 +43,7 @@ class RepositoriesListViewModel @Inject constructor(
             _actions.emit(
                 Action.RouteToDetail(
                     owner = repository.owner.login,
-                    repoName = repository.name,
+                    repositoryName = repository.name,
                     branch = repository.defaultBranch
                 )
             )
@@ -78,7 +78,7 @@ class RepositoriesListViewModel @Inject constructor(
         object Logout : Action
         data class RouteToDetail(
             val owner: String,
-            val repoName: String,
+            val repositoryName: String,
             val branch: String
         ) : Action
     }

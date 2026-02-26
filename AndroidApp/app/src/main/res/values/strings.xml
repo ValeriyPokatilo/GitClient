@@ -13,4 +13,5 @@
     <string name="repositories_empty_message">No repositories at the moment</string>
     <string name="repositories_connection_error_title">Connection error</string>
     <string name="repositories_connection_error_message">Check your Internet connection</string>
+    <string name="no_readme_md">No README.md</string>
 </resources>

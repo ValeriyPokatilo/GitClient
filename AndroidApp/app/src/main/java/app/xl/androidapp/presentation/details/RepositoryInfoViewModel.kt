@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.xl.androidapp.domain.entity.AppError
-import app.xl.androidapp.domain.entity.Repo
+import app.xl.androidapp.domain.entity.RepoDetails
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -21,14 +21,11 @@ class RepositoryInfoViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val owner: String = checkNotNull(savedStateHandle["owner"])
-    private val repoName: String = checkNotNull(savedStateHandle["repoName"])
+    private val repositoryName: String = checkNotNull(savedStateHandle["repositoryName"])
     private val branch: String = checkNotNull(savedStateHandle["branch"])
 
     private val _state = MutableLiveData<State>(State.Loading)
     val state: LiveData<State> = _state
-
-    private val _readmeState = MutableLiveData<ReadmeState>(ReadmeState.Loading)
-    val readmeState: LiveData<ReadmeState> = _readmeState
 
     private val _actions = MutableSharedFlow<Action>(
         replay = 0,
@@ -38,7 +35,6 @@ class RepositoryInfoViewModel @Inject constructor(
 
     init {
         loadRepositoryInfo()
-        loadReadme()
     }
 
     fun onBackButtonPressed() {
@@ -58,31 +54,46 @@ class RepositoryInfoViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = State.Loading
             try {
-                val detail = repository.getRepository(
+                val details = repository.getRepository(
                     owner = owner,
-                    repo = repoName
+                    repo = repositoryName
                 )
 
-                // TODO: - set state
+                _state.value = State.Loaded(
+                    githubRepo = details,
+                    readmeState = ReadmeState.Loading
+                )
+
+                loadReadme(details)
             } catch (error: AppError) {
-                // TODO: - set state
+                _state.value = State.Error(error)
             }
         }
     }
 
-    private fun loadReadme() {
-        viewModelScope.launch {
-            _readmeState.value = ReadmeState.Loading
-            try {
-                val readme = repository.getRepositoryReadme(owner, repoName, branchName = branch)
-                if (readme == null) {
-                    // TODO: - set state
-                } else {
-                    // TODO: - set state
-                }
-            } catch (e: AppError) {
-                // TODO: - set state
+    private suspend fun loadReadme(details: RepoDetails) {
+        try {
+            val readme = repository.getRepositoryReadme(
+                ownerName = owner,
+                repositoryName = repositoryName,
+                branchName = branch
+            )
+
+            val readmeState = if (readme == null) {
+                ReadmeState.Empty
+            } else {
+                ReadmeState.Loaded(readme)
             }
+
+            _state.value = State.Loaded(
+                githubRepo = details,
+                readmeState = readmeState
+            )
+        } catch (error: AppError) {
+            _state.value = State.Loaded(
+                githubRepo = details,
+                readmeState =  ReadmeState.Error(error)
+            )
         }
     }
 
@@ -91,7 +102,7 @@ class RepositoryInfoViewModel @Inject constructor(
         data class Error(val error: AppError) : State
 
         data class Loaded(
-            val githubRepo: Repo,
+            val githubRepo: RepoDetails,
             val readmeState: ReadmeState
         ) : State
     }
@@ -100,7 +111,7 @@ class RepositoryInfoViewModel @Inject constructor(
         object Loading : ReadmeState
         object Empty : ReadmeState
         data class Error(val error: AppError) : ReadmeState
-        data class Loaded(val markdown: String) : ReadmeState
+        data class Loaded(val markdown: String?) : ReadmeState
     }
 
     sealed interface Action {

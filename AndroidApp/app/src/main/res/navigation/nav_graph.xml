@@ -38,7 +38,7 @@
             android:name="owner"
             app:argType="string" />
         <argument
-            android:name="repoName"
+            android:name="repositoryName"
             app:argType="string" />
         <argument
             android:name="branch"
