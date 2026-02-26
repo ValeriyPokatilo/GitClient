@@ -12,6 +12,8 @@ fun RepoDetailsDto.toEntity(): RepoDetails {
         description = this.description,
         forksCount = this.forksCount,
         stargazersCount = this.stargazersCount,
-        watchersCount = this.watchersCount
+        subscribersCount = this.subscribersCount,
+        url = this.url,
+        license = this.license?.toEntity()
     )
 }

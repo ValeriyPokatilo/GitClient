@@ -8,5 +8,7 @@ data class RepoDetails(
     val description: String?,
     val forksCount: Int,
     val stargazersCount: Int,
-    val watchersCount: Int
+    val subscribersCount: Int,
+    val url: String,
+    val license: License?
 )

@@ -1,10 +1,14 @@
 package app.xl.androidapp.presentation.details
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -14,6 +18,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
+import app.xl.androidapp.domain.entity.AppError
+import app.xl.androidapp.domain.entity.RepoDetails
 import app.xl.androidapp.presentation.utils.MarkwonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -81,13 +87,20 @@ class DetailInfoFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 RepositoryInfoViewModel.State.Loading -> {
-                    binding.progressIndicator.show()
+                    binding.detailsProgressIndicator.show()
+                    binding.scrollView.isVisible = false
+                    binding.placeholderView.hide()
                 }
                 is RepositoryInfoViewModel.State.Loaded -> {
-                    binding.progressIndicator.hide()
+                    binding.detailsProgressIndicator.hide()
+                    binding.scrollView.isVisible = true
+                    binding.placeholderView.hide()
+                    setupDetails(state.githubRepo)
                 }
                 is RepositoryInfoViewModel.State.Error -> {
-                    binding.progressIndicator.hide()
+                    binding.detailsProgressIndicator.hide()
+                    binding.scrollView.isVisible = false
+                    showError(state.error)
                 }
             }
         }
@@ -99,12 +112,14 @@ class DetailInfoFragment : Fragment() {
                 val readmeTextView = binding.readmeTextView
                 when (val readmeState = state.readmeState) {
                     is RepositoryInfoViewModel.ReadmeState.Loaded -> {
+                        binding.readmeProgressIndicator.hide()
                         readmeState.markdown?.let {
                             markwon.setMarkdown(readmeTextView, readmeState.markdown)
                         }
                     }
 
                     RepositoryInfoViewModel.ReadmeState.Empty -> {
+                        binding.readmeProgressIndicator.hide()
                         readmeTextView.setTextColor(
                             ContextCompat.getColor(requireContext(), R.color.white_70)
                         )
@@ -112,15 +127,41 @@ class DetailInfoFragment : Fragment() {
                     }
 
                     is RepositoryInfoViewModel.ReadmeState.Error -> {
-                        // TODO: - set error
+                        binding.readmeProgressIndicator.hide()
+                        showError(readmeState.error)
                     }
 
                     RepositoryInfoViewModel.ReadmeState.Loading -> {
-                        // TODO: - show loader
+                        binding.readmeProgressIndicator.show()
                     }
                 }
             }
         }
+    }
+
+    private fun setupDetails(details: RepoDetails) {
+        val displayUrl = details.url.removePrefix("https://").removePrefix("http://")
+        binding.linkTextView.text = displayUrl
+        binding.linkTextView.movementMethod = LinkMovementMethod.getInstance()
+        binding.linkTextView.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, details.url.toUri())
+            it.context.startActivity(intent)
+        }
+
+        details.license?.let {
+            binding.licenselink.text = details.license.name
+            binding.licenselink.movementMethod = LinkMovementMethod.getInstance()
+            details.license.url?.let {
+                binding.licenselink.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW, details.license.url.toUri())
+                    it.context.startActivity(intent)
+                }
+            }
+        }
+
+        binding.starsCounter.text = details.stargazersCount.toString()
+        binding.forksCounter.text = details.forksCount.toString()
+        binding.watchersCounter.text = details.subscribersCount.toString()
     }
 
     private fun setupNavigationBar() {
@@ -141,6 +182,30 @@ class DetailInfoFragment : Fragment() {
                     true
                 } else -> false
             }
+        }
+    }
+
+    private fun showError(error: AppError) {
+        when (error) {
+            is AppError.Http -> {
+                binding.placeholderView.show(
+                    iconRes = R.drawable.ic_error,
+                    titleText = error.code.toString(),
+                    titleColorRes = R.color.error,
+                    messageText = error.message.toString()
+                )
+            }
+
+            is AppError.Network -> {
+                binding.placeholderView.show(
+                    iconRes = R.drawable.ic_not_connected,
+                    titleText = getString(R.string.repositories_connection_error_title),
+                    titleColorRes = R.color.error,
+                    messageText = getString(R.string.repositories_connection_error_message)
+                )
+            }
+
+            else -> {}
         }
     }
 

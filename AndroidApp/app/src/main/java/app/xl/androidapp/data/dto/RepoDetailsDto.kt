@@ -13,5 +13,7 @@ data class RepoDetailsDto(
     @SerialName("description") val description: String?,
     @SerialName("forks_count") val forksCount: Int,
     @SerialName("stargazers_count") val stargazersCount: Int,
-    @SerialName("watchers_count") val watchersCount: Int,
+    @SerialName("subscribers_count") val subscribersCount: Int,
+    @SerialName("html_url") val url: String,
+    @SerialName("license") val license: LicenseDto?,
 )

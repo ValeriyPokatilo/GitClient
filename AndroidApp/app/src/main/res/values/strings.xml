@@ -14,4 +14,8 @@
     <string name="repositories_connection_error_title">Connection error</string>
     <string name="repositories_connection_error_message">Check your Internet connection</string>
     <string name="no_readme_md">No README.md</string>
+    <string name="license">License</string>
+    <string name="stars">stars</string>
+    <string name="forks">forks</string>
+    <string name="watchers">watchers</string>
 </resources>
