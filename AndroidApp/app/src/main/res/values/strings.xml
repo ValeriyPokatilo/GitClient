@@ -18,4 +18,6 @@
     <string name="stars">stars</string>
     <string name="forks">forks</string>
     <string name="watchers">watchers</string>
+    <string name="refresh">REFRESH</string>
+    <string name="retry">RETRY</string>
 </resources>

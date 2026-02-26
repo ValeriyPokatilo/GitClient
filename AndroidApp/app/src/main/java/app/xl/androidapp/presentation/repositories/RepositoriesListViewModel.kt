@@ -50,6 +50,10 @@ class RepositoriesListViewModel @Inject constructor(
         }
     }
 
+    fun onRetryButtonPressed() {
+        loadRepositories()
+    }
+
     private fun loadRepositories() {
         viewModelScope.launch {
             _state.value = State.Loading

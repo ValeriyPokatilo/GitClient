@@ -20,6 +20,7 @@ import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.RepoDetails
+import app.xl.androidapp.presentation.models.PlaceholderModel
 import app.xl.androidapp.presentation.utils.MarkwonFactory
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -189,19 +190,31 @@ class DetailInfoFragment : Fragment() {
         when (error) {
             is AppError.Http -> {
                 binding.placeholderView.show(
-                    iconRes = R.drawable.ic_error,
-                    titleText = error.code.toString(),
-                    titleColorRes = R.color.error,
-                    messageText = error.message.toString()
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_error,
+                        title = error.code.toString(),
+                        titleColorRes = R.color.error,
+                        message = error.message.toString(),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
                 )
             }
 
             is AppError.Network -> {
                 binding.placeholderView.show(
-                    iconRes = R.drawable.ic_not_connected,
-                    titleText = getString(R.string.repositories_connection_error_title),
-                    titleColorRes = R.color.error,
-                    messageText = getString(R.string.repositories_connection_error_message)
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_not_connected,
+                        title = getString(R.string.repositories_connection_error_title),
+                        titleColorRes = R.color.error,
+                        message = getString(R.string.repositories_connection_error_message),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
                 )
             }
 

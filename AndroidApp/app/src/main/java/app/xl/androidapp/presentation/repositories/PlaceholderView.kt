@@ -5,13 +5,10 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.annotation.ColorRes
-import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import app.xl.androidapp.R
+import app.xl.androidapp.databinding.ViewPlaceholderBinding
+import app.xl.androidapp.presentation.models.PlaceholderModel
 
 class PlaceholderView @JvmOverloads constructor(
     context: Context,
@@ -19,31 +16,34 @@ class PlaceholderView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val icon: ImageView
-    private val title: TextView
-    private val message: TextView
+    private val binding: ViewPlaceholderBinding = ViewPlaceholderBinding.inflate(
+        LayoutInflater.from(context),  this
+    )
 
     init {
         orientation = VERTICAL
         gravity = Gravity.CENTER
-        LayoutInflater.from(context).inflate(R.layout.view_placeholder, this, true)
-
-        icon = findViewById(R.id.placeholderIcon)
-        title = findViewById(R.id.placeholderTitle)
-        message = findViewById(R.id.placeholderMessage)
     }
 
-    fun show(
-        @DrawableRes iconRes: Int,
-        titleText: String,
-        messageText: String,
-        @ColorRes titleColorRes: Int = android.R.color.white
-    ) {
+    fun show(model: PlaceholderModel) {
         visibility = View.VISIBLE
-        icon.setImageResource(iconRes)
-        title.text = titleText
-        title.setTextColor(ContextCompat.getColor(context, titleColorRes))
-        message.text = messageText
+
+        with(binding) {
+            placeholderIcon.setImageResource(model.iconRes)
+
+            placeholderTitle.apply {
+                text = model.title
+                setTextColor(ContextCompat.getColor(context, model.titleColorRes))
+            }
+
+            placeholderMessage.text = model.message
+
+            button.apply {
+                text = model.buttonTitle
+                setOnClickListener { model.buttonAction() }
+                visibility = View.VISIBLE
+            }
+        }
     }
 
     fun hide() {
