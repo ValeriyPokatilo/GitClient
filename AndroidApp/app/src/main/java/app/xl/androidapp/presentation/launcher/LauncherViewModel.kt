@@ -17,16 +17,17 @@ class LauncherViewModel @Inject constructor(
     val destination = _destination.receiveAsFlow()
 
     init {
-        checkAuth()
+        checkToken()
     }
 
-    private fun checkAuth() {
+    private fun checkToken() {
+        val target = if (tokenManager.getToken() != null) {
+            Destination.Repositories
+        } else {
+            Destination.Auth
+        }
+
         viewModelScope.launch {
-            val target = if (tokenManager.getToken() != null) {
-                Destination.Repositories
-            } else {
-                Destination.Auth
-            }
             _destination.send(target)
         }
     }
