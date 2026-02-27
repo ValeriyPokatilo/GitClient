@@ -61,99 +61,48 @@ class RepositoriesListFragment : Fragment() {
     }
 
     private fun bindToViewModel() {
-        bindRepositoriesListState()
+        bindState()
         bindActions()
     }
 
     private fun setupNavigationBar() {
         binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.action_logout -> {
-                    viewModel.onLogoutButtonPressed()
-                    true
-                } else -> false
+            if (it.itemId == R.id.action_logout) {
+                viewModel.onLogoutButtonPressed()
+                true
+            } else {
+                false
             }
         }
     }
 
     private fun setupRecyclerView() = with(binding.recyclerView) {
-        repoAdapter = RepoAdapter({ repository ->
+        repoAdapter = RepoAdapter { repository ->
             viewModel.onRepositoryItemPressed(repository)
-        })
+        }
         adapter = repoAdapter
         layoutManager = LinearLayoutManager(context)
         addItemDecoration(divider)
         setHasFixedSize(true)
     }
 
-    private fun bindRepositoriesListState() {
+    private fun bindState() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 RepositoriesListViewModel.State.Empty -> {
-                    binding.recyclerView.isVisible = false
-                    binding.progressIndicator.hide()
-                    binding.placeholderView.show(
-                        PlaceholderModel(
-                            iconRes = R.drawable.ic_empty,
-                            title = getString(R.string.repositories_empty_title),
-                            titleColorRes = R.color.blue,
-                            message = getString(R.string.repositories_empty_message),
-                            buttonTitle = getString(R.string.refresh),
-                            buttonAction = {
-                                viewModel.onRetryButtonPressed()
-                            }
-                        )
-                    )
+                    handleEmptyState()
                 }
 
                 RepositoriesListViewModel.State.Loading -> {
-                    binding.recyclerView.isVisible = false
-                    binding.progressIndicator.show()
-                    binding.placeholderView.hide()
+                    handleLoadingState()
                 }
 
                 is RepositoriesListViewModel.State.Loaded -> {
-                    repoAdapter.submitList(state.repositories)
-                    binding.recyclerView.isVisible = true
-                    binding.progressIndicator.hide()
-                    binding.placeholderView.hide()
+                    handleLoadedState(state)
                 }
 
                 is RepositoriesListViewModel.State.Error -> {
-                    binding.recyclerView.isVisible = false
-                    binding.progressIndicator.hide()
-
-                    when (state.error) {
-                        is AppError.Http -> {
-                            binding.placeholderView.show(
-                                model = PlaceholderModel(
-                                    iconRes = R.drawable.ic_error,
-                                    title = state.error.code.toString(),
-                                    titleColorRes = R.color.error,
-                                    message = state.error.message.toString(),
-                                    buttonTitle = getString(R.string.retry),
-                                    buttonAction = {
-                                        viewModel.onRetryButtonPressed()
-                                    }
-                                )
-                            )
-                        }
-
-                        is AppError.Network -> {
-                            binding.placeholderView.show(
-                                model = PlaceholderModel(
-                                    iconRes = R.drawable.ic_not_connected,
-                                    title = getString(R.string.repositories_connection_error_title),
-                                    titleColorRes = R.color.error,
-                                    message = getString(R.string.repositories_connection_error_message),
-                                    buttonTitle = getString(R.string.retry),
-                                    buttonAction = {
-                                        viewModel.onRetryButtonPressed()
-                                    }
-                                )
-                            )
-                        }
-                    }
+                    handleErrorState(state)
                 }
             }
         }
@@ -177,6 +126,73 @@ class RepositoriesListFragment : Fragment() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private fun handleEmptyState() {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.hide()
+        binding.placeholderView.show(
+            PlaceholderModel(
+                iconRes = R.drawable.ic_empty,
+                title = getString(R.string.repositories_empty_title),
+                titleColorRes = R.color.blue,
+                message = getString(R.string.repositories_empty_message),
+                buttonTitle = getString(R.string.refresh),
+                buttonAction = {
+                    viewModel.onRetryButtonPressed()
+                }
+            )
+        )
+    }
+
+    private fun handleLoadingState() {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.show()
+        binding.placeholderView.hide()
+    }
+
+    private fun handleLoadedState(state: RepositoriesListViewModel.State.Loaded) {
+        repoAdapter.submitList(state.repositories)
+        binding.recyclerView.isVisible = true
+        binding.progressIndicator.hide()
+        binding.placeholderView.hide()
+    }
+
+    private fun handleErrorState(state: RepositoriesListViewModel.State.Error) {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.hide()
+
+        when (state.error) {
+            is AppError.Http -> {
+                binding.placeholderView.show(
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_error,
+                        title = state.error.code.toString(),
+                        titleColorRes = R.color.error,
+                        message = state.error.message.toString(),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
+                )
+            }
+
+            is AppError.Network -> {
+                binding.placeholderView.show(
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_not_connected,
+                        title = getString(R.string.repositories_connection_error_title),
+                        titleColorRes = R.color.error,
+                        message = getString(R.string.repositories_connection_error_message),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
+                )
             }
         }
     }
