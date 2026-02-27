@@ -18,7 +18,6 @@ class AuthViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _token = MutableLiveData<String>("")
-    val token: LiveData<String> = _token
 
     private val _state = MutableLiveData<State>(State.Idle)
     val state: LiveData<State> = _state
@@ -81,10 +80,6 @@ class AuthViewModel @Inject constructor(
                         message = null
                     )
                 )
-            }
-
-            else -> {
-                Unit
             }
         }
     }

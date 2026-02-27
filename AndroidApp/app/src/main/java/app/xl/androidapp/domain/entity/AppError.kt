@@ -20,12 +20,4 @@ sealed class AppError(
         message = cause.message,
         cause = cause
     )
-
-    class DataFormat(
-        message: String,
-        cause: Throwable? = null
-    ) : AppError(
-        message = message,
-        cause = cause
-    )
 }

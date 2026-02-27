@@ -153,10 +153,6 @@ class RepositoriesListFragment : Fragment() {
                                 )
                             )
                         }
-
-                        else -> {
-                            Unit
-                        }
                     }
                 }
             }

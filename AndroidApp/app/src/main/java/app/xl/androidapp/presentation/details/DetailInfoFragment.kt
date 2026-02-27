@@ -217,8 +217,6 @@ class DetailInfoFragment : Fragment() {
                     )
                 )
             }
-
-            else -> {}
         }
     }
 

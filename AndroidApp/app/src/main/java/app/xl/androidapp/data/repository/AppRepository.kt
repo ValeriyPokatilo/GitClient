@@ -77,9 +77,7 @@ class AppRepository(
                 branchName = branchName
             )
 
-            if (readmeDto.encoding != "base64") {
-                throw AppError.DataFormat("Unsupported encoding: ${readmeDto.encoding}")
-            }
+            if (readmeDto.encoding != "base64") return null
 
             String(android.util.Base64.decode(readmeDto.content, android.util.Base64.DEFAULT))
                 .takeIf { it.isNotEmpty() }
