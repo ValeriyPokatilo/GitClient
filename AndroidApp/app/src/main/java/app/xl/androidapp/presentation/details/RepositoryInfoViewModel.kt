@@ -59,8 +59,8 @@ class RepositoryInfoViewModel @Inject constructor(
             _state.value = State.Loading
             try {
                 val details = repository.getRepository(
-                    owner = owner,
-                    repo = repositoryName
+                    ownerName = owner,
+                    repositoryName = repositoryName
                 )
 
                 _state.value = State.Loaded(

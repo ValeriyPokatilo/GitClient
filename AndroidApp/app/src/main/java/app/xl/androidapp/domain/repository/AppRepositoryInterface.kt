@@ -9,7 +9,7 @@ interface AppRepositoryInterface {
 
     suspend fun getRepositories(): List<Repo>
 
-    suspend fun getRepository(owner: String, repo: String): RepoDetails
+    suspend fun getRepository(ownerName: String, repositoryName: String): RepoDetails
 
     suspend fun getRepositoryReadme(ownerName: String, repositoryName: String, branchName: String): String?
 

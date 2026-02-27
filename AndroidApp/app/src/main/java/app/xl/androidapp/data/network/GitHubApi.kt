@@ -23,15 +23,15 @@ interface GitHubApi {
     @GET("repos/{owner}/{repo}")
     suspend fun getRepository(
         @Header("Authorization") token: String,
-        @Path("owner") owner: String,
-        @Path("repo") repo: String
+        @Path("owner") ownerName: String,
+        @Path("repo") repositoryName: String
     ): RepoDetailsDto
 
     @GET("repos/{owner}/{repo}/readme")
     suspend fun getRepositoryReadme(
         @Header("Authorization") token: String,
-        @Path("owner") owner: String,
-        @Path("repo") repo: String,
-        @Query("ref") branch: String? = null
+        @Path("owner") ownerName: String,
+        @Path("repo") repositoryName: String,
+        @Query("ref") branchName: String? = null
     ): ReadmeDto
 }

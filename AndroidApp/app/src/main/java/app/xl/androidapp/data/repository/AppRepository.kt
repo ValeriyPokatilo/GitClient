@@ -24,9 +24,9 @@ class AppRepository(
         val authHeader = token.toBearerHeader()
 
         try {
-            val dto = api.getUser(authHeader)
-            tokenManager.saveToken(token)
-            return dto.toEntity()
+            return api.getUser(authHeader)
+                .also { tokenManager.saveToken(token) }
+                .toEntity()
         } catch (exception: retrofit2.HttpException) {
             throw handleHttpException(exception)
         } catch (exception: IOException) {
@@ -46,11 +46,15 @@ class AppRepository(
         }
     }
 
-    override suspend fun getRepository(owner: String, repo: String): RepoDetails {
+    override suspend fun getRepository(ownerName: String, repositoryName: String): RepoDetails {
         val authHeader = createAuthHeader()
 
         try {
-            return api.getRepository(token = authHeader, owner = owner, repo = repo).toEntity()
+            return api.getRepository(
+                token = authHeader,
+                ownerName = ownerName,
+                repositoryName = repositoryName
+            ).toEntity()
         } catch (exception: retrofit2.HttpException) {
             throw handleHttpException(exception)
         } catch (exception: IOException) {
@@ -66,18 +70,18 @@ class AppRepository(
         val authHeader = createAuthHeader()
 
         return try {
-            val dto = api.getRepositoryReadme(
+            val readmeDto = api.getRepositoryReadme(
                 token = authHeader,
-                owner = ownerName,
-                repo = repositoryName,
-                branch = branchName
+                ownerName = ownerName,
+                repositoryName = repositoryName,
+                branchName = branchName
             )
 
-            if (dto.encoding != "base64") {
-                throw AppError.DataFormat("Unsupported encoding: ${dto.encoding}")
+            if (readmeDto.encoding != "base64") {
+                throw AppError.DataFormat("Unsupported encoding: ${readmeDto.encoding}")
             }
 
-            String(android.util.Base64.decode(dto.content, android.util.Base64.DEFAULT))
+            String(android.util.Base64.decode(readmeDto.content, android.util.Base64.DEFAULT))
                 .takeIf { it.isNotEmpty() }
         } catch (exception: retrofit2.HttpException) {
             if (exception.code() == 404) return null
