@@ -30,7 +30,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/linkTextView"
@@ -45,7 +45,7 @@
                 app:drawableStartCompat="@drawable/ic_link"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <LinearLayout
                 android:id="@+id/licenseLayout"
@@ -68,12 +68,12 @@
                     android:text="@string/license"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:id="@+id/licenselink"
@@ -82,8 +82,7 @@
                     android:textColor="@color/white"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:layout_marginStart="8dp" />
-
+                    android:layout_marginStart="8dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -105,7 +104,7 @@
                     android:gravity="center_vertical"
                     app:drawableStartCompat="@drawable/ic_star"
                     android:textColor="@color/yellow"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -115,12 +114,12 @@
                     android:text="@string/stars"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:id="@+id/forksCounter"
@@ -131,7 +130,7 @@
                     app:drawableStartCompat="@drawable/ic_fork"
                     android:textColor="@color/light_green"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -141,12 +140,12 @@
                     android:text="@string/forks"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"/>
 
                 <TextView
                     android:id="@+id/watchersCounter"
@@ -157,7 +156,7 @@
                     app:drawableStartCompat="@drawable/ic_watch"
                     android:textColor="@color/cyan"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -167,9 +166,8 @@
                     android:text="@string/watchers"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
             </LinearLayout>
-
 
             <TextView
                 android:id="@+id/readmeTextView"
@@ -181,7 +179,7 @@
                 android:textSize="16sp"
                 app:layout_constraintTop_toBottomOf="@id/countersLayout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/readmeProgressIndicator"
@@ -210,7 +208,7 @@
         app:layout_constraintTop_toTopOf="@+id/scrollView"
         app:layout_constraintBottom_toBottomOf="@+id/scrollView"
         app:layout_constraintStart_toStartOf="@+id/scrollView"
-        app:layout_constraintEnd_toEndOf="@+id/scrollView" />
+        app:layout_constraintEnd_toEndOf="@+id/scrollView"/>
 
     <app.xl.androidapp.presentation.repositories.PlaceholderView
         android:id="@+id/placeholderView"
@@ -220,5 +218,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

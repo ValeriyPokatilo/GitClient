@@ -19,6 +19,7 @@ import androidx.navigation.fragment.navArgs
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
 import app.xl.androidapp.domain.entity.AppError
+import app.xl.androidapp.domain.entity.License
 import app.xl.androidapp.domain.entity.RepositoryDetails
 import app.xl.androidapp.presentation.models.PlaceholderModel
 import app.xl.androidapp.presentation.utils.MarkwonFactory
@@ -64,7 +65,6 @@ class DetailInfoFragment : Fragment() {
     private fun bindToViewModel() {
         bindActions()
         bindState()
-        bindReadmeState()
     }
 
     private fun bindActions() {
@@ -96,7 +96,9 @@ class DetailInfoFragment : Fragment() {
                     binding.detailsProgressIndicator.hide()
                     binding.scrollView.isVisible = true
                     binding.placeholderView.hide()
+
                     setupDetails(state.githubRepo)
+                    handleReadmeState(state.readmeState)
                 }
                 is RepositoryInfoViewModel.State.Error -> {
                     binding.detailsProgressIndicator.hide()
@@ -107,59 +109,76 @@ class DetailInfoFragment : Fragment() {
         }
     }
 
-    private fun bindReadmeState() {
-        viewModel.state.observe(viewLifecycleOwner) { state ->
-            if (state is RepositoryInfoViewModel.State.Loaded) {
-                val readmeTextView = binding.readmeTextView
-                when (val readmeState = state.readmeState) {
-                    is RepositoryInfoViewModel.ReadmeState.Loaded -> {
-                        binding.readmeProgressIndicator.hide()
-                        readmeState.markdown?.let {
-                            markwon.setMarkdown(readmeTextView, readmeState.markdown)
-                        }
-                    }
+    private fun handleReadmeState(readmeState: RepositoryInfoViewModel.ReadmeState) {
+        val readmeTextView = binding.readmeTextView
+        when (readmeState) {
+            RepositoryInfoViewModel.ReadmeState.Loading -> {
+                binding.readmeProgressIndicator.show()
+            }
 
-                    RepositoryInfoViewModel.ReadmeState.Empty -> {
-                        binding.readmeProgressIndicator.hide()
-                        readmeTextView.setTextColor(
-                            ContextCompat.getColor(requireContext(), R.color.white_70)
-                        )
-                        readmeTextView.setText(R.string.no_readme_md)
-                    }
-
-                    is RepositoryInfoViewModel.ReadmeState.Error -> {
-                        binding.readmeProgressIndicator.hide()
-                        showError(readmeState.error)
-                    }
-
-                    RepositoryInfoViewModel.ReadmeState.Loading -> {
-                        binding.readmeProgressIndicator.show()
-                    }
+            is RepositoryInfoViewModel.ReadmeState.Loaded -> {
+                binding.readmeProgressIndicator.hide()
+                readmeState.markdown?.let {
+                    markwon.setMarkdown(readmeTextView, readmeState.markdown)
                 }
+            }
+
+            RepositoryInfoViewModel.ReadmeState.Empty -> {
+                binding.readmeProgressIndicator.hide()
+                readmeTextView.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.white_70)
+                )
+                readmeTextView.setText(R.string.no_readme_md)
+            }
+
+            is RepositoryInfoViewModel.ReadmeState.Error -> {
+                binding.readmeProgressIndicator.hide()
+                showError(readmeState.error)
             }
         }
     }
 
     private fun setupDetails(details: RepositoryDetails) {
-        val displayUrl = details.url.removePrefix("https://").removePrefix("http://")
+        setupRepositoryLink(details.url)
+        setupLicense(details.license)
+        setupCounters(details)
+    }
+
+    private fun setupRepositoryLink(url: String) {
+        val displayUrl = url.removePrefix("https://").removePrefix("http://")
         binding.linkTextView.text = displayUrl
         binding.linkTextView.movementMethod = LinkMovementMethod.getInstance()
         binding.linkTextView.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, details.url.toUri())
-            it.context.startActivity(intent)
+            openUrl(url)
         }
+    }
 
-        details.license?.let {
-            binding.licenselink.text = details.license.name
+    private fun setupLicense(license: License?) {
+        license?.let {
+            binding.licenselink.text = license.name
             binding.licenselink.movementMethod = LinkMovementMethod.getInstance()
-            details.license.url?.let {
+            license.url?.let {
                 binding.licenselink.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW, details.license.url.toUri())
-                    it.context.startActivity(intent)
+                    openUrl(license.url)
                 }
             }
         }
+    }
 
+    private fun openUrl(url: String) {
+        if (url.isBlank()) return
+
+        val uri = runCatching { url.toUri() }.getOrNull() ?: return
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        val context = requireContext()
+        val packageManager = context.packageManager
+
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    private fun setupCounters(details: RepositoryDetails) {
         binding.starsCounter.text = details.stargazersCount.toString()
         binding.forksCounter.text = details.forksCount.toString()
         binding.watchersCounter.text = details.subscribersCount.toString()
@@ -221,9 +240,7 @@ class DetailInfoFragment : Fragment() {
     }
 
     private fun navigateToAuth() {
-        findNavController().navigate(
-            R.id.action_global_authFragment
-        )
+        findNavController().navigate(R.id.action_global_authFragment)
     }
 
     private fun navigateToList() {

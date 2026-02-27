@@ -68,14 +68,14 @@ class RepositoryInfoViewModel @Inject constructor(
                     readmeState = ReadmeState.Loading
                 )
 
-                loadReadme(details)
+                loadReadme()
             } catch (error: AppError) {
                 _state.value = State.Error(error)
             }
         }
     }
 
-    private suspend fun loadReadme(details: RepositoryDetails) {
+    private suspend fun loadReadme() {
         try {
             val readme = repository.getRepositoryReadme(
                 ownerName = owner,
@@ -89,15 +89,16 @@ class RepositoryInfoViewModel @Inject constructor(
                 ReadmeState.Loaded(readme)
             }
 
-            _state.value = State.Loaded(
-                githubRepo = details,
-                readmeState = readmeState
-            )
+            updateReadmeState(readmeState)
         } catch (error: AppError) {
-            _state.value = State.Loaded(
-                githubRepo = details,
-                readmeState =  ReadmeState.Error(error)
-            )
+            updateReadmeState(ReadmeState.Error(error))
+        }
+    }
+
+    private fun updateReadmeState(readmeState: ReadmeState) {
+        val current = _state.value
+        if (current is State.Loaded) {
+            _state.value = current.copy(readmeState = readmeState)
         }
     }
 
