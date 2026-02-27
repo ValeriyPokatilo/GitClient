@@ -17,10 +17,10 @@ class AuthViewModel @Inject constructor(
     private val repository: AppRepositoryInterface
 ) : ViewModel() {
 
-    private val _token = MutableLiveData<String>("")
-
     private val _state = MutableLiveData<State>(State.Idle)
     val state: LiveData<State> = _state
+
+    private var token: String = ""
 
     private val _actions = MutableSharedFlow<Action>(
         replay = 0,
@@ -31,7 +31,7 @@ class AuthViewModel @Inject constructor(
     private val githubTokenRegex = Regex("^[A-Za-z0-9_-]*$")
 
     fun onTokenChanged(text: String) {
-        _token.value = text
+        token = text
         _state.value = when {
             text.isEmpty() -> State.Idle
             !githubTokenRegex.matches(text) -> State.InvalidInput
@@ -40,9 +40,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun onSignInButtonPressed() {
-        val tokenValue = _token.value.orEmpty()
-
-        if (tokenValue.isBlank()) {
+        if (token.isBlank()) {
             viewModelScope.launch {
                 _actions.emit(Action.FocusOnTokenField)
             }
@@ -52,7 +50,7 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _state.value = State.Loading
             try {
-                repository.signIn(tokenValue)
+                repository.signIn(token)
                 _state.value = State.Idle
                 _actions.emit(Action.RouteToMain)
             } catch (error: AppError) {

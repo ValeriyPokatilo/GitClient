@@ -49,13 +49,13 @@ class AuthFragment : Fragment() {
     }
 
     private fun bindToViewModel() {
-        bindAuthState()
+        bindState()
         bindActions()
         bindSignInButton()
         bindInputs()
     }
 
-    private fun bindAuthState() {
+    private fun bindState() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
                 AuthViewModel.State.Idle -> {
@@ -72,7 +72,7 @@ class AuthFragment : Fragment() {
 
                 is AuthViewModel.State.InvalidInput -> {
                     binding.signInButton.isEnabled = false
-                    binding.tokenInputLayout.error = R.string.invalid_token.toString()
+                    binding.tokenInputLayout.error = getString(R.string.invalid_token)
                 }
             }
         }
@@ -84,14 +84,10 @@ class AuthFragment : Fragment() {
                 viewModel.actions.collect { action ->
                     when (action) {
                         is AuthViewModel.Action.RouteToMain -> {
-                             findNavController().navigate(
-                                 R.id.action_authFragment_to_repositoriesListFragment
-                             )
+                             navigateToMain()
                         }
                         is AuthViewModel.Action.ShowError -> {
-                            val code = action.code
-                            val message = action.message
-                            showErrorDialog(code, message)
+                            showErrorDialog(code = action.code, message = action.message)
                         }
                         is AuthViewModel.Action.FocusOnTokenField -> {
                             binding.tokenInputEdit.requestFocus()
@@ -118,8 +114,6 @@ class AuthFragment : Fragment() {
 
     private fun bindInputs() {
         binding.tokenInputEdit.doAfterTextChanged { text ->
-            binding.signInButton.isEnabled = true
-            binding.tokenInputLayout.error = null
             viewModel.onTokenChanged(text?.toString().orEmpty())
         }
     }
@@ -141,5 +135,11 @@ class AuthFragment : Fragment() {
             .setMessage(fullMessage)
             .setPositiveButton(R.string.ok, null)
             .show()
+    }
+
+    private fun navigateToMain() {
+        findNavController().navigate(
+            R.id.action_authFragment_to_repositoriesListFragment
+        )
     }
 }

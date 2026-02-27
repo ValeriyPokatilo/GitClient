@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:contentDescription="@string/github_logo_description"
         android:src="@drawable/ic_logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:layout_marginHorizontal="16dp"
-        app:hintTextColor="@color/blue"
         android:textColorHint="@color/white_50"
+        app:hintTextColor="@color/blue"
         app:boxBackgroundMode="filled"
         app:boxBackgroundColor="@color/background"
         app:boxStrokeColor="@color/text_field_stroke_color"
@@ -46,7 +47,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="8dp"
             android:lineHeight="24dp"
-            android:hint="@string/token_text_field_placeholder" />
+            android:hint="@string/token_text_field_placeholder"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -75,5 +76,4 @@
         app:layout_constraintBottom_toBottomOf="@+id/signInButton"
         app:layout_constraintStart_toStartOf="@+id/signInButton"
         app:layout_constraintEnd_toEndOf="@+id/signInButton"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
