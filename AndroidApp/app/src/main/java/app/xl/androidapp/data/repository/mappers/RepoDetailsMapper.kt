@@ -1,10 +1,10 @@
 package app.xl.androidapp.data.repository.mappers
 
 import app.xl.androidapp.data.dto.RepoDetailsDto
-import app.xl.androidapp.domain.entity.RepoDetails
+import app.xl.androidapp.domain.entity.RepositoryDetails
 
-fun RepoDetailsDto.toEntity(): RepoDetails {
-    return RepoDetails(
+fun RepoDetailsDto.toEntity(): RepositoryDetails {
+    return RepositoryDetails(
         id = this.id,
         name = this.name,
         fullName = this.fullName,

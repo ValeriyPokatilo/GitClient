@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.xl.androidapp.domain.entity.AppError
-import app.xl.androidapp.domain.entity.RepoDetails
+import app.xl.androidapp.domain.entity.RepositoryDetails
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -75,7 +75,7 @@ class RepositoryInfoViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadReadme(details: RepoDetails) {
+    private suspend fun loadReadme(details: RepositoryDetails) {
         try {
             val readme = repository.getRepositoryReadme(
                 ownerName = owner,
@@ -106,7 +106,7 @@ class RepositoryInfoViewModel @Inject constructor(
         data class Error(val error: AppError) : State
 
         data class Loaded(
-            val githubRepo: RepoDetails,
+            val githubRepo: RepositoryDetails,
             val readmeState: ReadmeState
         ) : State
     }

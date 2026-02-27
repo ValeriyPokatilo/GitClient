@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import app.xl.androidapp.databinding.RepositoryItemBinding
-import app.xl.androidapp.domain.entity.Repo
+import app.xl.androidapp.domain.entity.Repository
 
 class RepoAdapter(
-    private val onItemClick: (Repo) -> Unit
-) : ListAdapter<Repo, RepoAdapter.RepoViewHolder>(DiffCallback()) {
+    private val onItemClick: (Repository) -> Unit
+) : ListAdapter<Repository, RepoAdapter.RepoViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoViewHolder {
         val binding = RepositoryItemBinding.inflate(
@@ -28,29 +28,29 @@ class RepoAdapter(
 
     class RepoViewHolder(
         private val binding: RepositoryItemBinding,
-        private val onItemClick: (Repo) -> Unit
+        private val onItemClick: (Repository) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(repo: Repo) = with(binding) {
-            repositoryName.text = repo.name
-            repositoryLanguage.text = repo.language
+        fun bind(repository: Repository) = with(binding) {
+            repositoryName.text = repository.name
+            repositoryLanguage.text = repository.language
 
             repositoryDescription.apply {
-                text = repo.description
-                isVisible = !repo.description.isNullOrBlank()
+                text = repository.description
+                isVisible = !repository.description.isNullOrBlank()
             }
 
             root.setOnClickListener {
-                onItemClick(repo)
+                onItemClick(repository)
             }
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<Repo>() {
-        override fun areItemsTheSame(oldItem: Repo, newItem: Repo): Boolean =
+    class DiffCallback : DiffUtil.ItemCallback<Repository>() {
+        override fun areItemsTheSame(oldItem: Repository, newItem: Repository): Boolean =
             oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: Repo, newItem: Repo): Boolean =
+        override fun areContentsTheSame(oldItem: Repository, newItem: Repository): Boolean =
             oldItem == newItem
     }
 }

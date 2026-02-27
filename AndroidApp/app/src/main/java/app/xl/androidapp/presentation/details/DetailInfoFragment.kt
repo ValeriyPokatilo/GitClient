@@ -19,7 +19,7 @@ import androidx.navigation.fragment.navArgs
 import app.xl.androidapp.R
 import app.xl.androidapp.databinding.FragmentDetailInfoBinding
 import app.xl.androidapp.domain.entity.AppError
-import app.xl.androidapp.domain.entity.RepoDetails
+import app.xl.androidapp.domain.entity.RepositoryDetails
 import app.xl.androidapp.presentation.models.PlaceholderModel
 import app.xl.androidapp.presentation.utils.MarkwonFactory
 import dagger.hilt.android.AndroidEntryPoint
@@ -140,7 +140,7 @@ class DetailInfoFragment : Fragment() {
         }
     }
 
-    private fun setupDetails(details: RepoDetails) {
+    private fun setupDetails(details: RepositoryDetails) {
         val displayUrl = details.url.removePrefix("https://").removePrefix("http://")
         binding.linkTextView.text = displayUrl
         binding.linkTextView.movementMethod = LinkMovementMethod.getInstance()

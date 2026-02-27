@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.xl.androidapp.domain.entity.AppError
-import app.xl.androidapp.domain.entity.Repo
+import app.xl.androidapp.domain.entity.Repository
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -38,7 +38,7 @@ class RepositoriesListViewModel @Inject constructor(
         }
     }
 
-    fun onRepositoryItemPressed(repository: Repo) {
+    fun onRepositoryItemPressed(repository: Repository) {
         viewModelScope.launch {
             _actions.emit(
                 Action.RouteToDetail(
@@ -73,7 +73,7 @@ class RepositoriesListViewModel @Inject constructor(
 
     sealed interface State {
         object Loading : State
-        data class Loaded(val repositories: List<Repo>) : State
+        data class Loaded(val repositories: List<Repository>) : State
         data class Error(val error: AppError) : State
         object Empty : State
     }

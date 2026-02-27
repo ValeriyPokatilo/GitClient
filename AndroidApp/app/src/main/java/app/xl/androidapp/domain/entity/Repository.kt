@@ -1,6 +1,6 @@
 package app.xl.androidapp.domain.entity
 
-data class Repo(
+data class Repository(
     val id: Long,
     val name: String,
     val owner: Owner,

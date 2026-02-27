@@ -7,8 +7,8 @@ import app.xl.androidapp.data.network.toBearerHeader
 import app.xl.androidapp.data.repository.mappers.toEntity
 import app.xl.androidapp.data.storage.TokenManager
 import app.xl.androidapp.domain.entity.AppError
-import app.xl.androidapp.domain.entity.Repo
-import app.xl.androidapp.domain.entity.RepoDetails
+import app.xl.androidapp.domain.entity.Repository
+import app.xl.androidapp.domain.entity.RepositoryDetails
 import app.xl.androidapp.domain.entity.UserInfo
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
 import kotlinx.serialization.json.Json
@@ -34,7 +34,7 @@ class AppRepository(
         }
     }
 
-    override suspend fun getRepositories(): List<Repo> {
+    override suspend fun getRepositories(): List<Repository> {
         val authHeader = createAuthHeader()
 
         try {
@@ -46,7 +46,7 @@ class AppRepository(
         }
     }
 
-    override suspend fun getRepository(ownerName: String, repositoryName: String): RepoDetails {
+    override suspend fun getRepository(ownerName: String, repositoryName: String): RepositoryDetails {
         val authHeader = createAuthHeader()
 
         try {
