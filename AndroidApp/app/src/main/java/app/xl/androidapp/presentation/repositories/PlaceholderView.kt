@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import app.xl.androidapp.databinding.ViewPlaceholderBinding
@@ -26,7 +25,7 @@ class PlaceholderView @JvmOverloads constructor(
     }
 
     fun show(model: PlaceholderModel) {
-        visibility = View.VISIBLE
+        visibility = VISIBLE
 
         with(binding) {
             placeholderIcon.setImageResource(model.iconRes)
@@ -41,12 +40,12 @@ class PlaceholderView @JvmOverloads constructor(
             button.apply {
                 text = model.buttonTitle
                 setOnClickListener { model.buttonAction() }
-                visibility = View.VISIBLE
+                visibility = VISIBLE
             }
         }
     }
 
     fun hide() {
-        visibility = View.GONE
+        visibility = GONE
     }
 }
