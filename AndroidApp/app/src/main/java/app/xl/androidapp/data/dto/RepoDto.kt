@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RepoDto(
-    @SerialName("id") val id: Long,
-    @SerialName("name") val name: String,
-    @SerialName("owner") val owner: OwnerDto,
-    @SerialName("language") val language: String?,
-    @SerialName("description") val description: String?,
+    val id: Long,
+    val name: String,
+    val owner: OwnerDto,
+    val language: String? = null,
+    val description: String? = null,
     @SerialName("default_branch") val defaultBranch: String
 )

@@ -5,7 +5,6 @@ import app.xl.androidapp.domain.entity.Owner
 
 fun OwnerDto.toEntity(): Owner {
     return Owner(
-        id = this.id,
         login = this.login
     )
 }

@@ -1,10 +1,6 @@
 package app.xl.androidapp.data.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OwnerDto(
-    @SerialName("id") val id: Long,
-    @SerialName("login") val login: String,
-)
+data class OwnerDto(val login: String)
