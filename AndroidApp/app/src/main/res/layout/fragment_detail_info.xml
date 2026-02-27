@@ -42,6 +42,8 @@
                 android:textSize="16sp"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
+                android:singleLine="true"
+                android:ellipsize="end"
                 app:drawableStartCompat="@drawable/ic_link"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

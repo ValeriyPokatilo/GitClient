@@ -21,4 +21,6 @@
     <string name="refresh">REFRESH</string>
     <string name="retry">RETRY</string>
     <string name="github_logo_description">Github logo</string>
+    <string name="placeholder_icon_description">Placeholder icon</string>
+    <string name="reload_data_description">Reload data</string>
 </resources>
