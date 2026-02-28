@@ -38,8 +38,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
                 android:paddingTop="24dp"
-                android:paddingHorizontal="16dp"
-                android:textSize="16sp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
+                android:textSize="@dimen/text_medium"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:singleLine="true"
@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="24dp"
-                android:paddingHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 app:layout_constraintTop_toBottomOf="@id/linkTextView"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -70,7 +70,7 @@
                     android:text="@string/license"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
 
                 <View
                     android:layout_width="0dp"
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_medium"
                     android:textStyle="bold"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="24dp"
-                android:paddingHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_default"
                 app:layout_constraintTop_toBottomOf="@id/licenseLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -116,7 +116,7 @@
                     android:text="@string/stars"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
 
                 <View
                     android:layout_width="0dp"
@@ -132,7 +132,7 @@
                     app:drawableStartCompat="@drawable/ic_fork"
                     android:textColor="@color/light_green"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -142,7 +142,7 @@
                     android:text="@string/forks"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
 
                 <View
                     android:layout_width="0dp"
@@ -158,7 +158,7 @@
                     app:drawableStartCompat="@drawable/ic_watch"
                     android:textColor="@color/cyan"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -168,7 +168,7 @@
                     android:text="@string/watchers"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:textSize="@dimen/text_medium"/>
             </LinearLayout>
 
             <TextView
@@ -178,7 +178,8 @@
                 android:layout_marginTop="24dp"
                 android:textColor="@color/white_70"
                 android:lineSpacingExtra="4dp"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_medium"
+                android:layout_marginHorizontal="@dimen/margin_horizontal_small"
                 app:layout_constraintTop_toBottomOf="@id/countersLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
