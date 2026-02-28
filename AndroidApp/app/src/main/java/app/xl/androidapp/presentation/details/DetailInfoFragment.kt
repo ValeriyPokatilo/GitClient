@@ -128,7 +128,7 @@ class DetailInfoFragment : Fragment() {
                 readmeTextView.setTextColor(
                     ContextCompat.getColor(requireContext(), R.color.white_70)
                 )
-                readmeTextView.setText(R.string.no_readme_md)
+                readmeTextView.text = getString(R.string.no_readme_md)
             }
 
             is RepositoryInfoViewModel.ReadmeState.Error -> {
