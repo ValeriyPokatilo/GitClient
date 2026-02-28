@@ -20,6 +20,7 @@ serialization = "2.3.10"
 retrofit = "3.0.0"
 safeargs = "2.9.7"
 markwon = "4.6.2"
+splashscreen = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +43,7 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converter = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
 markwon = { module = "io.noties.markwon:core", version.ref = "markwon" }
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

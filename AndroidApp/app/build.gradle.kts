@@ -63,4 +63,5 @@ dependencies {
     implementation(libs.retrofit.converter)
     ksp(libs.hilt.android.compiler)
     implementation(libs.markwon)
+    implementation(libs.androidx.core.splashscreen)
 }
