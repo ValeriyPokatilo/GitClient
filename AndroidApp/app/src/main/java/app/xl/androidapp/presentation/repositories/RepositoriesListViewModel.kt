@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import app.xl.androidapp.domain.entity.AppError
 import app.xl.androidapp.domain.entity.Repository
 import app.xl.androidapp.domain.repository.AppRepositoryInterface
+import app.xl.androidapp.presentation.utils.LanguageColorProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class RepositoriesListViewModel @Inject constructor(
-    private val repository: AppRepositoryInterface
+    private val repository: AppRepositoryInterface,
+    private val languageColorProvider: LanguageColorProvider
 ) : ViewModel() {
 
     private val _state = MutableLiveData<State>(State.Loading)
@@ -60,14 +62,26 @@ class RepositoriesListViewModel @Inject constructor(
             try {
                 val repositories = repository.getRepositories()
 
-                _state.value = if (repositories.isEmpty()) {
-                    State.Empty
+                if (repositories.isEmpty()) {
+                    _state.value = State.Empty
                 } else {
-                    State.Loaded(repositories.map { it })
+                    val repositoriesWithColors = addLanguageColors(repositories)
+                    _state.value = State.Loaded(repositoriesWithColors)
                 }
             } catch (error: AppError) {
                 _state.value = State.Error(error)
             }
+        }
+    }
+
+    private fun addLanguageColors(repositories: List<Repository>): List<Repository> {
+        val languages = repositories.mapNotNull { it.language }.toSet()
+        val languageColorMap = languages.associateWith {
+            languageColorProvider.getColor(it)
+        }
+
+        return repositories.map { repo ->
+            repo.copy(languageColor = repo.language?.let { languageColorMap[it] })
         }
     }
 

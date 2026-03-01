@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import app.xl.androidapp.R
 import app.xl.androidapp.databinding.RepositoryItemBinding
 import app.xl.androidapp.domain.entity.Repository
 
@@ -34,6 +35,9 @@ class RepoAdapter(
         fun bind(repository: Repository) = with(binding) {
             repositoryName.text = repository.name
             repositoryLanguage.text = repository.language
+            repositoryLanguage.setTextColor(
+                repository.languageColor ?: R.color.white
+            )
 
             repositoryDescription.apply {
                 text = repository.description
