@@ -3,7 +3,6 @@ package app.xl.androidapp.data.dto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class RepoDetailsDto(
     val id: Long,
