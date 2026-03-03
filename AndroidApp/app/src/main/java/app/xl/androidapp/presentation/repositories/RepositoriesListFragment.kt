@@ -1,0 +1,214 @@
+package app.xl.androidapp.presentation.repositories
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import app.xl.androidapp.R
+import app.xl.androidapp.databinding.FragmentRepositoriesListBinding
+import app.xl.androidapp.domain.entity.AppError
+import app.xl.androidapp.presentation.models.PlaceholderModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
+@AndroidEntryPoint
+class RepositoriesListFragment : Fragment() {
+
+    private var _binding: FragmentRepositoriesListBinding? = null
+    private val binding
+        get() = _binding ?: error("Binding is only valid between onCreateView and onDestroyView")
+
+    private val viewModel: RepositoriesListViewModel by viewModels()
+
+    private lateinit var repoAdapter: RepoAdapter
+
+    private val divider by lazy {
+        DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL).apply {
+            ContextCompat.getDrawable(requireContext(), R.drawable.divider)?.let {
+                setDrawable(it)
+            }
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRepositoriesListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupNavigationBar()
+        setupRecyclerView()
+        bindToViewModel()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun bindToViewModel() {
+        bindState()
+        bindActions()
+    }
+
+    private fun setupNavigationBar() {
+        binding.toolbar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.action_logout) {
+                viewModel.onLogoutButtonPressed()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun setupRecyclerView() = with(binding.recyclerView) {
+        repoAdapter = RepoAdapter { repository ->
+            viewModel.onRepositoryItemPressed(repository)
+        }
+        adapter = repoAdapter
+        layoutManager = LinearLayoutManager(context)
+        addItemDecoration(divider)
+        setHasFixedSize(true)
+    }
+
+    private fun bindState() {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                RepositoriesListViewModel.State.Empty -> {
+                    handleEmptyState()
+                }
+
+                RepositoriesListViewModel.State.Loading -> {
+                    handleLoadingState()
+                }
+
+                is RepositoriesListViewModel.State.Loaded -> {
+                    handleLoadedState(state)
+                }
+
+                is RepositoriesListViewModel.State.Error -> {
+                    handleErrorState(state)
+                }
+            }
+        }
+    }
+
+    private fun bindActions() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.actions.collect { action ->
+                    when (action) {
+                        is RepositoriesListViewModel.Action.RouteToDetail -> {
+                            navigateToDetails(
+                                owner = action.owner,
+                                repositoryName = action.repositoryName,
+                                branch = action.branch
+                            )
+                        }
+
+                        RepositoriesListViewModel.Action.Logout -> {
+                            navigateToAuth()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleEmptyState() {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.hide()
+        binding.placeholderView.show(
+            PlaceholderModel(
+                iconRes = R.drawable.ic_empty,
+                title = getString(R.string.repositories_empty_title),
+                titleColorRes = R.color.blue,
+                message = getString(R.string.repositories_empty_message),
+                buttonTitle = getString(R.string.refresh),
+                buttonAction = {
+                    viewModel.onRetryButtonPressed()
+                }
+            )
+        )
+    }
+
+    private fun handleLoadingState() {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.show()
+        binding.placeholderView.hide()
+    }
+
+    private fun handleLoadedState(state: RepositoriesListViewModel.State.Loaded) {
+        repoAdapter.submitList(state.repositories)
+        binding.recyclerView.isVisible = true
+        binding.progressIndicator.hide()
+        binding.placeholderView.hide()
+    }
+
+    private fun handleErrorState(state: RepositoriesListViewModel.State.Error) {
+        binding.recyclerView.isVisible = false
+        binding.progressIndicator.hide()
+
+        when (state.error) {
+            is AppError.Http -> {
+                binding.placeholderView.show(
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_error,
+                        title = state.error.code.toString(),
+                        titleColorRes = R.color.error,
+                        message = state.error.message.toString(),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
+                )
+            }
+
+            is AppError.Network -> {
+                binding.placeholderView.show(
+                    model = PlaceholderModel(
+                        iconRes = R.drawable.ic_not_connected,
+                        title = getString(R.string.repositories_connection_error_title),
+                        titleColorRes = R.color.error,
+                        message = getString(R.string.repositories_connection_error_message),
+                        buttonTitle = getString(R.string.retry),
+                        buttonAction = {
+                            viewModel.onRetryButtonPressed()
+                        }
+                    )
+                )
+            }
+        }
+    }
+
+    private fun navigateToAuth() {
+        findNavController().navigate(R.id.action_global_authFragment)
+    }
+
+    private fun navigateToDetails(owner: String, repositoryName: String, branch: String) {
+        val action = RepositoriesListFragmentDirections
+            .actionRepositoriesListFragmentToDetailInfoFragment(
+                owner = owner,
+                repositoryName = repositoryName,
+                branch = branch
+            )
+
+        findNavController().navigate(action)
+    }
+}

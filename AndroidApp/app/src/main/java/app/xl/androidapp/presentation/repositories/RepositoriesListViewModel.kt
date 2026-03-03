@@ -1,0 +1,103 @@
+package app.xl.androidapp.presentation.repositories
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import app.xl.androidapp.domain.entity.AppError
+import app.xl.androidapp.domain.entity.Repository
+import app.xl.androidapp.domain.repository.AppRepositoryInterface
+import app.xl.androidapp.presentation.utils.LanguageColorProvider
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+
+@HiltViewModel
+class RepositoriesListViewModel @Inject constructor(
+    private val repository: AppRepositoryInterface,
+    private val languageColorProvider: LanguageColorProvider
+) : ViewModel() {
+
+    private val _state = MutableLiveData<State>(State.Loading)
+    val state: LiveData<State> = _state
+
+    private val _actions = MutableSharedFlow<Action>(
+        replay = 0,
+        extraBufferCapacity = 1
+    )
+    val actions: Flow<Action> = _actions
+
+    init {
+        loadRepositories()
+    }
+
+    fun onLogoutButtonPressed() {
+        viewModelScope.launch {
+            repository.logout()
+            _actions.emit(Action.Logout)
+        }
+    }
+
+    fun onRepositoryItemPressed(repository: Repository) {
+        viewModelScope.launch {
+            _actions.emit(
+                Action.RouteToDetail(
+                    owner = repository.owner.login,
+                    repositoryName = repository.name,
+                    branch = repository.defaultBranch
+                )
+            )
+        }
+    }
+
+    fun onRetryButtonPressed() {
+        loadRepositories()
+    }
+
+    private fun loadRepositories() {
+        viewModelScope.launch {
+            _state.value = State.Loading
+            try {
+                val repositories = repository.getRepositories()
+
+                if (repositories.isEmpty()) {
+                    _state.value = State.Empty
+                } else {
+                    val repositoriesWithColors = addLanguageColors(repositories)
+                    _state.value = State.Loaded(repositoriesWithColors)
+                }
+            } catch (error: AppError) {
+                _state.value = State.Error(error)
+            }
+        }
+    }
+
+    private fun addLanguageColors(repositories: List<Repository>): List<Repository> {
+        val languages = repositories.mapNotNull { it.language }.toSet()
+        val languageColorMap = languages.associateWith {
+            languageColorProvider.getColor(it)
+        }
+
+        return repositories.map { repo ->
+            repo.copy(languageColor = repo.language?.let { languageColorMap[it] })
+        }
+    }
+
+    sealed interface State {
+        object Loading : State
+        data class Loaded(val repositories: List<Repository>) : State
+        data class Error(val error: AppError) : State
+        object Empty : State
+    }
+
+    sealed interface Action {
+        object Logout : Action
+        data class RouteToDetail(
+            val owner: String,
+            val repositoryName: String,
+            val branch: String
+        ) : Action
+    }
+}
